@@ -1,0 +1,95 @@
+<h2>🚗 Find Cheapest Spare Parts Near You</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AutoMart 🚗</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+  <!-- Google Maps -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo"></script>
+
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      font-family: Arial;
+    }
+
+    input {
+      padding: 10px;
+      margin: 5px;
+      width: 220px;
+    }
+
+    button {
+      padding: 10px;
+      background: blue;
+      color: white;
+      border: none;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    .card {
+      border: 1px solid gray;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    #map {
+      height: 300px;
+      width: 100%;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>AutoMart 🚗</h1>
+
+<p id="userStatus">❌ Not logged in</p>
+
+<!-- LOGIN -->
+<h2>Login / Register</h2>
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password"><br>
+<button onclick="register()">Register</button>
+<button onclick="login()">Login</button>
+<button onclick="logout()">Logout</button>
+
+<hr>
+
+<!-- LOCATION -->
+<button onclick="getLocation()">📍 Get Location</button>
+<p id="locationStatus"></p>
+
+<hr>
+
+<!-- ADD PART -->
+<h2>Add Part</h2>
+<input id="partName" placeholder="Part Name">
+<input id="partPrice" type="number" placeholder="Price">
+<input id="shopName" placeholder="Shop Name"><br>
+<button onclick="addPart()">Add Part</button>
+
+<hr>
+
+<!-- SEARCH -->
+<h2>Search</h2>
+<input id="search" placeholder="Search part">
+<button onclick="searchParts()">Search</button>
+
+<div id="results"></div>
+
+<div id="map"></div>
+
+</body>
+</html>
+<script src="script.js"></script>
