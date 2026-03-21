@@ -1,459 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoMart - Car Spare Parts Marketplace</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoMart</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 1rem 5%;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 600px;
-            margin: 0 2rem;
-            position: relative;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 1rem 1.5rem;
-            border: none;
-            border-radius: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-bar::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .search-bar:focus {
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .search-btn:hover {
-            transform: translateY(-50%) scale(1.05);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
-        }
-
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-email {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            font-size: 0.9rem;
-        }
-
-        .auth-btn {
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .auth-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 120px 5% 80px;
-            text-align: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #00d4ff, #ffffff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Products Grid */
-        .products-section {
-            max-width: 1400px;
-            margin: 0 auto 4rem;
-            padding: 0 5%;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 3rem;
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .product-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #00d4ff, #0099cc, #00d4ff);
-            background-size: 200% 100%;
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0%, 100% { background-position: 200% 0; }
-            50% { background-position: 0 0; }
-        }
-
-        .product-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 30px 60px rgba(0, 212, 255, 0.2);
-            border-color: rgba(0, 212, 255, 0.3);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 204, 0.1));
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            position: relative;
-        }
-
-        .product-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            line-height: 1.3;
-        }
-
-        .product-price {
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
-        }
-
-        .product-shop {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.95rem;
-        }
-
-        /* Add Part Form */
-        .add-part-section {
-            max-width: 600px;
-            margin: 0 auto 4rem;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        .add-part-section h2 {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 1rem 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            color: #fff;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #00d4ff;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .add-part-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            border: none;
-            padding: 1.25rem;
-            border-radius: 15px;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .add-part-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.4);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .search-container {
-                margin: 0;
-                order: 3;
-                width: 100%;
-            }
-
-            .user-section {
-                order: 2;
-            }
-
-            .logo {
-                order: 1;
-            }
-
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: 1.5rem;
-            }
-
-            .add-part-section {
-                margin: 0 5% 2rem;
-                padding: 2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .navbar {
-                padding: 1rem 3%;
-            }
-
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<!-- KEEP YOUR CSS SAME (no change needed) -->
 </head>
+
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">AutoMart</div>
-            
-            <div class="search-container">
-                <input type="text" class="search-bar" placeholder="Search for car parts, brands, models...">
-                <button class="search-btn">🔍 Search</button>
-            </div>
 
-            <div class="user-section">
-                <span class="user-email">john.doe@email.com</span>
-                <button class="auth-btn">Logout</button>
-            </div>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">AutoMart</div>
+
+        <div class="search-container">
+            <!-- ✅ FIXED ID -->
+            <input id="search" type="text" class="search-bar" placeholder="Search parts...">
+            <!-- ✅ CONNECTED BUTTON -->
+            <button class="search-btn" onclick="searchParts()">🔍 Search</button>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Find Perfect Spare Parts</h1>
-        <p>Discover premium quality car parts from trusted sellers. Fast delivery, best prices, and expert support.</p>
-    </section>
-
-    <!-- Products Section -->
-    <section class="products-section">
-        <h2 class="section-title">Featured Parts</h2>
-        <div class="products-grid">
-            <div class="product-card">
-                <div class="product-image">⚙️</div>
-                <div class="product-name">Brake Pads - Front (Toyota Camry)</div>
-                <div class="product-price">$89.99</div>
-                <div class="product-shop">AutoPro Shop</div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image">🔋</div>
-                <div class="product-name">Car Battery (12V 60Ah)</div>
-                <div class="product-price">$129.99</div>
-                <div class="product-shop">PowerParts</div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image">🛞</div>
-                <div class="product-name">Alloy Wheels (17" Set of 4)</div>
-                <div class="product-price">$599.99</div>
-                <div class="product-shop">WheelMasters</div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image">💡</div>
-                <div class="product-name">LED Headlight Bulbs (H7)</div>
-                <div class="product-price">$49.99</div>
-                <div class="product-shop">LightPro</div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image">❄️</div>
-                <div class="product-name">AC Compressor (Honda Civic)</div>
-                <div class="product-price">$249.99</div>
-                <div class="product-shop">CoolTech Auto</div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image">🔧</div>
-                <div class="product-name">Oil Filter (Universal)</div>
-                <div class="product-price">$12.99</div>
-                <div class="product-shop">QuickFix Parts</div>
-            </div>
+        <div class="user-section">
+            <!-- ✅ CONNECTED USER -->
+            <span id="user" class="user-email">Not logged in</span>
+            <button class="auth-btn" onclick="logout()">Logout</button>
         </div>
-    </section>
+    </div>
+</nav>
 
-    <!-- Add New Part Section -->
-    <section class="add-part-section">
-        <h2>Add New Part</h2>
-        <form>
-            <div class="form-group">
-                <label for="part-name">Part Name</label>
-                <input type="text" id="part-name" placeholder="e.g., Brake Pads Toyota Camry">
-            </div>
-            <div class="form-group">
-                <label for="part-price">Price ($)</label>
-                <input type="number" id="part-price" placeholder="99.99" step="0.01">
-            </div>
-            <div class="form-group">
-                <label for="shop-name">Shop Name</label>
-                <input type="text" id="shop-name" placeholder="Your Shop Name">
-            </div>
-            <button type="submit" class="add-part-btn">🚀 Add Part to Marketplace</button>
-        </form>
-    </section>
+<!-- HERO -->
+<section class="hero">
+    <h1>Find Perfect Spare Parts</h1>
+    <p>Discover premium quality car parts from trusted sellers.</p>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section">
+    <h2 class="section-title">Parts</h2>
+
+    <!-- ❌ REMOVE STATIC CARDS -->
+    <!-- ✅ ADD DYNAMIC RESULTS -->
+    <div id="results" class="products-grid"></div>
+</section>
+
+<!-- ADD PART -->
+<section class="add-part-section">
+    <h2>Add New Part</h2>
+
+    <div class="form-group">
+        <label>Part Name</label>
+        <input id="partName" type="text" placeholder="Brake Pads">
+    </div>
+
+    <div class="form-group">
+        <label>Price</label>
+        <input id="partPrice" type="number">
+    </div>
+
+    <div class="form-group">
+        <label>Shop Name</label>
+        <input id="shopName" type="text">
+    </div>
+
+    <!-- ✅ CONNECTED BUTTON -->
+    <button class="add-part-btn" onclick="addPart()">🚀 Add Part</button>
+</section>
+
+<!-- 🔥 IMPORTANT -->
+<script type="module" src="script.js"></script>
+
 </body>
 </html>
-<script type="module" src="script.js"></script>
