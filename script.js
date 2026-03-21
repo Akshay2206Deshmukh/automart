@@ -105,9 +105,9 @@ window.addPart = async function () {
     return;
   }
 
-  const name = document.getElementById("partName").value;
+  const name = document.getElementById("partName").value.trim();
   const price = document.getElementById("partPrice").value;
-  const shop = document.getElementById("shopName").value;
+  const shop = document.getElementById("shopName").value.trim();
 
   if (!name || !price || !shop) {
     alert("❌ Fill all fields!");
@@ -116,18 +116,21 @@ window.addPart = async function () {
 
   try {
     await addDoc(collection(db, "parts"), {
-      name: name,
+      name,
       price: Number(price),
-      shop: shop,
+      shop,
       owner: user.email
     });
 
     alert("✅ Part added!");
 
-    // clear inputs
+    // Clear inputs
     document.getElementById("partName").value = "";
     document.getElementById("partPrice").value = "";
     document.getElementById("shopName").value = "";
+
+    // 🔥 Reload data instantly
+    loadParts();
 
   } catch (err) {
     alert("❌ " + err.message);
@@ -147,22 +150,17 @@ window.searchParts = async function () {
     const p = doc.data();
 
     if (p.name.toLowerCase().includes(query)) {
-      html += `
-        <div class="product-card">
-          <div class="product-image">⚙️</div>
-          <div class="product-name">${p.name}</div>
-          <div class="product-price">₹${p.price}</div>
-          <div class="product-shop">${p.shop || ""}</div>
-        </div>
-      `;
+      html += createCard(p);
     }
   });
 
   document.getElementById("results").innerHTML =
     html || "<p style='text-align:center'>No parts found</p>";
 };
-loadParts();
 
+// =============================
+// 📦 LOAD ALL PARTS
+// =============================
 async function loadParts() {
   const snapshot = await getDocs(collection(db, "parts"));
 
@@ -170,16 +168,28 @@ async function loadParts() {
 
   snapshot.forEach((doc) => {
     const p = doc.data();
-
-    html += `
-      <div class="product-card">
-        <div class="product-image">⚙️</div>
-        <div class="product-name">${p.name}</div>
-        <div class="product-price">₹${p.price}</div>
-        <div class="product-shop">${p.shop}</div>
-      </div>
-    `;
+    html += createCard(p);
   });
 
-  document.getElementById("results").innerHTML = html;
+  document.getElementById("results").innerHTML =
+    html || "<p style='text-align:center'>No parts available</p>";
 }
+
+// =============================
+// 🎨 CARD TEMPLATE
+// =============================
+function createCard(p) {
+  return `
+    <div class="product-card">
+      <div class="product-image">⚙️</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">₹${p.price}</div>
+      <div class="product-shop">${p.shop}</div>
+    </div>
+  `;
+}
+
+// =============================
+// 🚀 AUTO LOAD ON START
+// =============================
+loadParts();
