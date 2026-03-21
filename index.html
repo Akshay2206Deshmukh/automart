@@ -5,47 +5,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AutoMart</title>
 
-<!-- KEEP YOUR CSS SAME (no change needed) -->
+<!-- ✅ CSS LINK -->
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<!-- NAVBAR -->
+<!-- 🔥 NAVBAR -->
 <nav class="navbar">
     <div class="nav-container">
         <div class="logo">AutoMart</div>
 
         <div class="search-container">
-            <!-- ✅ FIXED ID -->
             <input id="search" type="text" class="search-bar" placeholder="Search parts...">
-            <!-- ✅ CONNECTED BUTTON -->
             <button class="search-btn" onclick="searchParts()">🔍 Search</button>
         </div>
 
         <div class="user-section">
-            <!-- ✅ CONNECTED USER -->
             <span id="user" class="user-email">Not logged in</span>
             <button class="auth-btn" onclick="logout()">Logout</button>
         </div>
     </div>
 </nav>
 
-<!-- HERO -->
+<!-- 🔥 HERO -->
 <section class="hero">
     <h1>Find Perfect Spare Parts</h1>
     <p>Discover premium quality car parts from trusted sellers.</p>
 </section>
 
-<!-- PRODUCTS -->
+<!-- 🔥 PRODUCTS -->
 <section class="products-section">
     <h2 class="section-title">Parts</h2>
 
-    <!-- ❌ REMOVE STATIC CARDS -->
-    <!-- ✅ ADD DYNAMIC RESULTS -->
+    <!-- ✅ Dynamic results -->
     <div id="results" class="products-grid"></div>
 </section>
 
-<!-- ADD PART -->
+<!-- 🔥 ADD PART -->
 <section class="add-part-section">
     <h2>Add New Part</h2>
 
@@ -56,19 +54,18 @@
 
     <div class="form-group">
         <label>Price</label>
-        <input id="partPrice" type="number">
+        <input id="partPrice" type="number" placeholder="₹">
     </div>
 
     <div class="form-group">
         <label>Shop Name</label>
-        <input id="shopName" type="text">
+        <input id="shopName" type="text" placeholder="Shop Name">
     </div>
 
-    <!-- ✅ CONNECTED BUTTON -->
     <button class="add-part-btn" onclick="addPart()">🚀 Add Part</button>
 </section>
 
-<!-- 🔥 IMPORTANT -->
+<!-- 🔥 SCRIPT -->
 <script type="module" src="script.js"></script>
 
 </body>
