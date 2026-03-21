@@ -161,3 +161,25 @@ window.searchParts = async function () {
   document.getElementById("results").innerHTML =
     html || "<p style='text-align:center'>No parts found</p>";
 };
+loadParts();
+
+async function loadParts() {
+  const snapshot = await getDocs(collection(db, "parts"));
+
+  let html = "";
+
+  snapshot.forEach((doc) => {
+    const p = doc.data();
+
+    html += `
+      <div class="product-card">
+        <div class="product-image">⚙️</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">₹${p.price}</div>
+        <div class="product-shop">${p.shop}</div>
+      </div>
+    `;
+  });
+
+  document.getElementById("results").innerHTML = html;
+}
