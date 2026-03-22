@@ -32,13 +32,21 @@ onAuthStateChanged(auth, (user) => {
 
 // AUTH
 window.register = async () => {
-  await createUserWithEmailAndPassword(auth, email(), pass());
-  alert("Registered");
+  try {
+    await createUserWithEmailAndPassword(auth, email(), pass());
+    alert("Registered");
+  } catch (e) {
+    alert(e.message);
+  }
 };
 
 window.login = async () => {
-  await signInWithEmailAndPassword(auth, email(), pass());
-  alert("Logged in");
+  try {
+    await signInWithEmailAndPassword(auth, email(), pass());
+    alert("Logged in");
+  } catch (e) {
+    alert(e.message);
+  }
 };
 
 window.logout = () => signOut(auth);
