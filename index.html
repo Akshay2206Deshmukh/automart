@@ -71,6 +71,20 @@
   <button onclick="addPart()">Add Part</button>
 </section>
 
+<!-- 🤖 CHATBOT -->
+<div id="chatbot">
+  <div id="chat-header" onclick="toggleChat()">🤖 AutoBot</div>
+
+  <div id="chat-body">
+    <div id="chat-messages"></div>
+
+    <div class="chat-input">
+      <input id="chatInput" placeholder="Ask something...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
 <!-- MAP SCRIPT -->
 <script>
 function initMap() {
@@ -88,7 +102,6 @@ function initMap() {
 
 <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo&callback=initMap"></script>
 
-<!-- IMPORTANT -->
 <script type="module" src="script.js"></script>
 
 </body>
