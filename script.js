@@ -1,133 +1,168 @@
-body {
-  margin: 0;
-  font-family: 'Segoe UI';
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: white;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBhT0ag7_G567gV2uYvqKbXUARwWzDsDZg",
+  authDomain: "automart-6d640.firebaseapp.com",
+  projectId: "automart-6d640"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+let cart = [];
+
+/* USER STATE */
+onAuthStateChanged(auth, (user) => {
+  document.getElementById("user").innerText =
+    user ? user.email : "Not logged in";
+});
+
+/* AUTH */
+window.login = async () => {
+  try {
+    await signInWithEmailAndPassword(auth, email(), pass());
+    alert("Login Successful ✅");
+  } catch (e) {
+    alert(e.message);
+  }
+};
+
+window.register = async () => {
+  try {
+    await createUserWithEmailAndPassword(auth, email(), pass());
+    alert("Registered ✅");
+  } catch (e) {
+    alert(e.message);
+  }
+};
+
+window.logout = () => signOut(auth);
+
+/* ADD PART */
+window.addPart = async () => {
+  try {
+    await addDoc(collection(db, "parts"), {
+      name: val("partName"),
+      price: Number(val("partPrice")),
+      shop: val("shopName"),
+      image: val("partImage")
+    });
+
+    alert("Part Added ✅");
+    loadParts();
+  } catch (e) {
+    alert(e.message);
+  }
+};
+
+/* LOAD */
+async function loadParts() {
+  const snap = await getDocs(collection(db, "parts"));
+  let html = "";
+
+  snap.forEach(d => {
+    const p = d.data();
+    html += `
+    <div class="card">
+      <img src="${p.image || 'https://via.placeholder.com/150'}">
+      <h3>${p.name}</h3>
+      <p>₹${p.price}</p>
+      <div>⭐⭐⭐⭐☆</div>
+      <button onclick="addToCart('${p.name}',${p.price})">Add</button>
+    </div>`;
+  });
+
+  document.getElementById("results").innerHTML = html;
 }
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  background: black;
+/* CART */
+window.addToCart = (name, price) => {
+  cart.push({name, price});
+  renderCart();
+};
+
+function renderCart(){
+  let total=0, html="";
+  cart.forEach((item,i)=>{
+    total+=item.price;
+    html+=`${item.name} ₹${item.price} 
+    <button onclick="removeItem(${i})">❌</button><br>`;
+  });
+  document.getElementById("cartItems").innerHTML=html;
+  document.getElementById("total").innerText=total;
 }
 
-.navbar input {
-  padding: 10px;
-  border-radius: 20px;
-}
+window.removeItem = (i)=>{
+  cart.splice(i,1);
+  renderCart();
+};
 
-.auth {
-  text-align: center;
-  margin-top: 30px;
-}
+window.checkout = () => {
+  let total = cart.reduce((sum,i)=>sum+i.price,0);
 
-.auth-box {
-  background: rgba(255,255,255,0.05);
-  padding: 20px;
-  width: 300px;
-  margin: auto;
-  border-radius: 10px;
-}
+  const rzp = new Razorpay({
+    key:"rzp_test_xxxxx",
+    amount: total*100,
+    currency:"INR",
+    name:"AutoMart",
+    handler: ()=>{
+      alert("Payment Successful 🎉");
+      cart=[];
+      renderCart();
+    }
+  });
 
-.auth-box input {
-  width: 100%;
-  margin: 10px 0;
-  padding: 10px;
-}
+  rzp.open();
+};
 
-.auth-buttons {
-  display: flex;
-  justify-content: space-between;
-}
+window.toggleCart = () => {
+  document.getElementById("cartDrawer").classList.toggle("active");
+};
 
-.hero {
-  text-align: center;
-  padding: 40px;
-}
-
-#map {
-  height: 400px;
-  width: 90%;
-  margin: auto;
-  border-radius: 10px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.card {
-  background: rgba(255,255,255,0.05);
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.card img {
-  width: 100%;
-  height: 150px;
-}
-
-.cart {
-  position: fixed;
-  right: -300px;
-  top: 0;
-  width: 300px;
-  height: 100%;
-  background: #111;
-  padding: 20px;
-  transition: 0.3s;
-}
-
-.cart.active {
-  right: 0;
-}
-
-.cartBtn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: green;
-  padding: 15px;
-  border-radius: 50%;
-}
-
-.add {
-  text-align: center;
-  padding: 40px;
-}
-
-.add input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-}
+/* SEARCH */
+document.getElementById("search").addEventListener("input", async (e)=>{
+  const q=e.target.value.toLowerCase();
+  const snap=await getDocs(collection(db,"parts"));
+  let html="";
+  snap.forEach(d=>{
+    const p=d.data();
+    if(p.name.toLowerCase().includes(q)){
+      html+=`<div class="card"><h3>${p.name}</h3></div>`;
+    }
+  });
+  document.getElementById("results").innerHTML=html;
+});
 
 /* CHATBOT */
-#chatbot {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  width: 280px;
+window.toggleChat = ()=>{
+  const b=document.getElementById("chat-body");
+  b.style.display=b.style.display==="block"?"none":"block";
+};
+
+window.sendMessage = ()=>{
+  const input=document.getElementById("chatInput");
+  const msg=input.value;
+  addMsg("You",msg);
+  input.value="";
+  setTimeout(()=>addMsg("Bot",reply(msg)),500);
+};
+
+function addMsg(s,t){
+  document.getElementById("chat-messages").innerHTML+=`<p><b>${s}:</b> ${t}</p>`;
 }
 
-#chat-header {
-  background: #22c55e;
-  padding: 10px;
-  cursor: pointer;
+function reply(msg){
+  msg=msg.toLowerCase();
+  if(msg.includes("price")) return "Prices range ₹200–₹5000";
+  if(msg.includes("best")) return "Brake pads & filters are trending";
+  return "Ask about parts, price, or cart 🤖";
 }
 
-#chat-body {
-  display: none;
-  background: #111;
-  height: 300px;
-}
+const val=id=>document.getElementById(id).value;
+const email=()=>val("email");
+const pass=()=>val("password");
 
-#chat-messages {
-  height: 220px;
-  overflow-y: auto;
-}
+loadParts();
