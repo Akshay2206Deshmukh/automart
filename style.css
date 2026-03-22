@@ -1,7 +1,12 @@
-body {
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to right, #0f172a, #1e293b);
+  background: #0f172a; /* 🔥 FIXED (no gradient blur) */
   color: white;
 }
 
@@ -42,7 +47,7 @@ body {
   cursor: pointer;
 }
 
-/* LOGIN BOX */
+/* LOGIN */
 .auth-section {
   width: 350px;
   margin: 40px auto;
