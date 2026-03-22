@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AutoMart</title>
 
-<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -20,7 +20,7 @@
       <button onclick="searchParts()">🔍</button>
     </div>
 
-    <div class="user-section">
+    <div>
       <span id="user">Not logged in</span>
       <button onclick="logout()">Logout</button>
     </div>
@@ -32,49 +32,49 @@
   <h2>Login / Register</h2>
   <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
-  <div>
-    <button onclick="login()">Login</button>
-    <button onclick="register()">Register</button>
-  </div>
+
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Register</button>
 </section>
 
 <!-- HERO -->
 <section class="hero">
   <h1>Find Perfect Spare Parts</h1>
+  <p>Premium quality parts from trusted sellers</p>
 </section>
 
 <!-- MAP -->
-<h2 class="center">Nearby Shops</h2>
-<div id="map"></div>
+<section>
+  <h2 class="center">Nearby Shops</h2>
+  <div id="map"></div>
+</section>
 
 <!-- PRODUCTS -->
-<h2 class="center">Products</h2>
-<div id="results" class="grid"></div>
+<section>
+  <h2 class="center">Products</h2>
+  <div id="results" class="grid"></div>
+</section>
 
 <!-- CART -->
-<h2 class="center">Cart</h2>
-<div id="cartItems" class="grid"></div>
-<h3 id="total" class="center">Total: ₹0</h3>
-<button class="center-btn" onclick="checkout()">💳 Checkout</button>
+<section class="center">
+  <h2>Cart</h2>
+  <div id="cart"></div>
+  <h3>Total: ₹<span id="total">0</span></h3>
+  <button onclick="checkout()">Checkout</button>
+</section>
 
 <!-- ADD PART -->
-<h2 class="center">Add Part</h2>
-<input id="partName" placeholder="Part Name">
-<input id="partPrice" type="number" placeholder="Price">
-<input id="shopName" placeholder="Shop Name">
-<input id="partImage" type="file">
-<button class="center-btn" onclick="addPart()">Add Part</button>
+<section>
+  <h2 class="center">Add Part</h2>
 
-<!-- CHECKOUT POPUP -->
-<div id="checkoutBox" class="popup">
-  <h2>Order Summary</h2>
-  <div id="orderDetails"></div>
-  <h3 id="finalTotal"></h3>
-  <button onclick="confirmOrder()">Pay Now</button>
-  <button onclick="closeCheckout()">Close</button>
-</div>
+  <input id="partName" placeholder="Part Name">
+  <input id="partPrice" type="number" placeholder="Price">
+  <input id="shopName" placeholder="Shop Name">
 
-<!-- MAP SCRIPT -->
+  <button onclick="addPart()">Add Part</button>
+</section>
+
+<!-- MAP -->
 <script>
 function initMap() {
   const loc = { lat: 19.2183, lng: 72.9781 };
@@ -84,13 +84,16 @@ function initMap() {
     center: loc,
   });
 
-  new google.maps.Marker({ position: loc, map });
+  new google.maps.Marker({
+    position: loc,
+    map: map
+  });
 }
 </script>
 
 <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo&callback=initMap"></script>
 
-<script type="module" src="./script.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
