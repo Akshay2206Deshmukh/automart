@@ -46,22 +46,24 @@
 
 <!-- MAP -->
 <section>
-  <h2 style="text-align:center;">Nearby Shops</h2>
+  <h2 class="center">Nearby Shops</h2>
   <div id="map"></div>
 </section>
 
 <!-- PRODUCTS -->
 <section>
-  <h2>Available Parts</h2>
+  <h2 class="center">Available Parts</h2>
   <div id="results" class="grid"></div>
 </section>
 
 <!-- ADD PART -->
 <section>
-  <h2>Add Part</h2>
+  <h2 class="center">Add Part</h2>
+
   <input id="partName" placeholder="Part Name">
   <input id="partPrice" type="number" placeholder="Price">
   <input id="shopName" placeholder="Shop Name">
+
   <button onclick="addPart()">Add Part</button>
 </section>
 
@@ -84,7 +86,6 @@ function initMap() {
 
 <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo&callback=initMap"></script>
 
-<!-- FIREBASE SCRIPT -->
 <script type="module" src="script.js"></script>
 
 </body>
