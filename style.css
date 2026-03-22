@@ -204,3 +204,36 @@ section button:hover {
   text-align: center;
   z-index: 1000;
 }
+// =============================
+// 💳 CHECKOUT SYSTEM
+// =============================
+function checkout() {
+  if (cart.length === 0) {
+    alert("Cart is empty!");
+    return;
+  }
+
+  let html = "";
+  let total = 0;
+
+  cart.forEach(item => {
+    total += item.price;
+    html += `<p>${item.name} - ₹${item.price}</p>`;
+  });
+
+  document.getElementById("orderDetails").innerHTML = html;
+  document.getElementById("finalTotal").innerText = "Total: ₹" + total;
+
+  document.getElementById("checkoutBox").style.display = "block";
+}
+
+function closeCheckout() {
+  document.getElementById("checkoutBox").style.display = "none";
+}
+
+function confirmOrder() {
+  alert("🎉 Payment Successful!");
+  cart = [];
+  renderCart();
+  closeCheckout();
+}
