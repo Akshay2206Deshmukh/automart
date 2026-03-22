@@ -5,7 +5,6 @@ body {
   color: white;
 }
 
-/* NAVBAR */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -16,30 +15,25 @@ body {
 .navbar input {
   padding: 10px;
   border-radius: 20px;
-  border: none;
 }
 
-/* AUTH */
 .auth {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 40px;
+  text-align: center;
+  margin-top: 30px;
 }
 
 .auth-box {
   background: rgba(255,255,255,0.05);
-  padding: 25px;
-  border-radius: 15px;
-  width: 320px;
+  padding: 20px;
+  width: 300px;
+  margin: auto;
+  border-radius: 10px;
 }
 
 .auth-box input {
   width: 100%;
   margin: 10px 0;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
+  padding: 10px;
 }
 
 .auth-buttons {
@@ -47,30 +41,18 @@ body {
   justify-content: space-between;
 }
 
-.auth-buttons button {
-  width: 48%;
-  padding: 10px;
-  background: #22c55e;
-  border: none;
-  border-radius: 8px;
-  color: white;
-}
-
-/* HERO */
 .hero {
   text-align: center;
   padding: 40px;
 }
 
-/* MAP */
 #map {
   height: 400px;
   width: 90%;
   margin: auto;
-  border-radius: 15px;
+  border-radius: 10px;
 }
 
-/* GRID */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
@@ -78,22 +60,18 @@ body {
   padding: 20px;
 }
 
-/* CARD */
 .card {
   background: rgba(255,255,255,0.05);
   padding: 20px;
-  border-radius: 15px;
+  border-radius: 10px;
   text-align: center;
 }
 
 .card img {
   width: 100%;
   height: 150px;
-  border-radius: 10px;
-  object-fit: cover;
 }
 
-/* CART */
 .cart {
   position: fixed;
   right: -300px;
@@ -113,13 +91,11 @@ body {
   position: fixed;
   bottom: 20px;
   right: 20px;
+  background: green;
   padding: 15px;
   border-radius: 50%;
-  background: #22c55e;
-  border: none;
 }
 
-/* ADD */
 .add {
   text-align: center;
   padding: 40px;
@@ -128,8 +104,7 @@ body {
 .add input {
   display: block;
   margin: 10px auto;
-  padding: 12px;
-  width: 300px;
+  padding: 10px;
 }
 
 /* CHATBOT */
@@ -142,36 +117,17 @@ body {
 
 #chat-header {
   background: #22c55e;
-  padding: 12px;
-  border-radius: 10px;
+  padding: 10px;
   cursor: pointer;
 }
 
 #chat-body {
   display: none;
   background: #111;
-  height: 350px;
-  border-radius: 10px;
-  padding: 10px;
-  flex-direction: column;
+  height: 300px;
 }
 
 #chat-messages {
-  height: 250px;
+  height: 220px;
   overflow-y: auto;
-}
-
-.chat-input {
-  display: flex;
-}
-
-.chat-input input {
-  flex: 1;
-  padding: 8px;
-}
-
-.chat-input button {
-  background: #22c55e;
-  border: none;
-  padding: 8px;
 }
