@@ -1,194 +1,64 @@
-/* 🔥 GLOBAL */
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: Arial;
   background: linear-gradient(to right, #0f172a, #1e293b);
   color: white;
 }
 
-/* 🔥 NAVBAR */
 .navbar {
   background: black;
-  padding: 12px 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  padding: 10px;
 }
 
 .nav-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.search-container {
-  display: flex;
-  gap: 10px;
-}
-
-.search-container input {
+input {
   padding: 10px;
-  border-radius: 5px;
-  border: none;
-  outline: none;
-}
-
-.search-container button {
-  background: #3b82f6;
-  border: none;
-  padding: 10px;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.search-container button:hover {
-  background: #2563eb;
-}
-
-/* 🔐 AUTH */
-.auth-section {
-  max-width: 400px;
-  margin: 30px auto;
-  padding: 20px;
-  background: #1e293b;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
-}
-
-.auth-section input {
-  width: 90%;
-  margin: 10px 0;
-  padding: 12px;
-  border-radius: 6px;
-  border: none;
-}
-
-.auth-section button {
   margin: 5px;
-  padding: 10px 15px;
+}
+
+button {
+  padding: 10px;
   background: #3b82f6;
   border: none;
   color: white;
-  border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s;
 }
 
-.auth-section button:hover {
-  background: #2563eb;
-}
-
-/* HERO */
 .hero {
   text-align: center;
-  padding: 50px 20px;
+  padding: 30px;
 }
 
-/* CENTER */
-.center {
-  text-align: center;
-}
-
-/* 🗺 MAP */
 #map {
   height: 400px;
   width: 90%;
-  margin: 30px auto;
-  border-radius: 15px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  margin: auto;
 }
 
-/* 📦 PRODUCTS GRID */
 .grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
+  gap: 15px;
   justify-content: center;
 }
 
-/* 🧾 CARD */
 .card {
   background: #1e293b;
-  padding: 20px;
-  border-radius: 12px;
-  width: 220px;
+  padding: 15px;
+  border-radius: 10px;
+  width: 200px;
   text-align: center;
-  transition: 0.3s;
-  box-shadow: 0 0 10px rgba(0,0,0,0.4);
 }
 
-.card:hover {
-  transform: translateY(-5px) scale(1.05);
-}
-
-/* 🛒 CARD BUTTON (Add to Cart) */
-.card button {
-  margin-top: 10px;
-  background: #f59e0b;
-  border: none;
-  padding: 8px;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.card button:hover {
-  background: #d97706;
-}
-
-/* 🧾 CART */
-#cartItems .card {
-  background: #0f172a;
-  border: 1px solid #334155;
-}
-
-#total {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-/* 📝 FORM */
-section input {
-  display: block;
-  margin: 10px auto;
-  padding: 12px;
-  width: 300px;
-  border-radius: 6px;
-  border: none;
-}
-
-section button {
-  display: block;
-  margin: 15px auto;
-  padding: 12px 25px;
-  background: #22c55e;
-  border: none;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-section button:hover {
-  background: #16a34a;
-}
-.checkout-btn {
-  display: block;
-  margin: 20px auto;
-  padding: 12px 25px;
-  background: #f43f5e;
-  border: none;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
+.card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .checkout-box {
@@ -200,40 +70,4 @@ section button:hover {
   background: #1e293b;
   padding: 20px;
   border-radius: 10px;
-  width: 300px;
-  text-align: center;
-  z-index: 1000;
-}
-// =============================
-// 💳 CHECKOUT SYSTEM
-// =============================
-function checkout() {
-  if (cart.length === 0) {
-    alert("Cart is empty!");
-    return;
-  }
-
-  let html = "";
-  let total = 0;
-
-  cart.forEach(item => {
-    total += item.price;
-    html += `<p>${item.name} - ₹${item.price}</p>`;
-  });
-
-  document.getElementById("orderDetails").innerHTML = html;
-  document.getElementById("finalTotal").innerText = "Total: ₹" + total;
-
-  document.getElementById("checkoutBox").style.display = "block";
-}
-
-function closeCheckout() {
-  document.getElementById("checkoutBox").style.display = "none";
-}
-
-function confirmOrder() {
-  alert("🎉 Payment Successful!");
-  cart = [];
-  renderCart();
-  closeCheckout();
 }
