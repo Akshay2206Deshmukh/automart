@@ -7,37 +7,53 @@ body {
 
 /* NAVBAR */
 .navbar {
-  position: sticky;
-  top: 0;
   display: flex;
   justify-content: space-between;
   padding: 15px;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(10px);
+  background: black;
 }
 
 .navbar input {
   padding: 10px;
   border-radius: 20px;
   border: none;
-  width: 300px;
 }
 
 /* AUTH */
 .auth {
-  width: 320px;
-  margin: 40px auto;
-  padding: 20px;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(15px);
-  border-radius: 15px;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
 }
 
-.auth input {
+.auth-box {
+  background: rgba(255,255,255,0.05);
+  padding: 25px;
+  border-radius: 15px;
+  width: 320px;
+}
+
+.auth-box input {
   width: 100%;
   margin: 10px 0;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+}
+
+.auth-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.auth-buttons button {
+  width: 48%;
   padding: 10px;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  color: white;
 }
 
 /* HERO */
@@ -68,12 +84,6 @@ body {
   padding: 20px;
   border-radius: 15px;
   text-align: center;
-  transition: 0.3s;
-}
-
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(0,255,255,0.3);
 }
 
 .card img {
@@ -113,4 +123,11 @@ body {
 .add {
   text-align: center;
   padding: 40px;
+}
+
+.add input {
+  display: block;
+  margin: 10px auto;
+  padding: 12px;
+  width: 300px;
 }
