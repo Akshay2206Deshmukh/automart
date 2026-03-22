@@ -131,3 +131,47 @@ body {
   padding: 12px;
   width: 300px;
 }
+
+/* CHATBOT */
+#chatbot {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 280px;
+}
+
+#chat-header {
+  background: #22c55e;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#chat-body {
+  display: none;
+  background: #111;
+  height: 350px;
+  border-radius: 10px;
+  padding: 10px;
+  flex-direction: column;
+}
+
+#chat-messages {
+  height: 250px;
+  overflow-y: auto;
+}
+
+.chat-input {
+  display: flex;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+}
+
+.chat-input button {
+  background: #22c55e;
+  border: none;
+  padding: 8px;
+}
