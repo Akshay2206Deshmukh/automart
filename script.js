@@ -1,197 +1,117 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBhT0ag7_G567gV2uYvqKbXUARwWzDsDZg",
-  authDomain: "automart-6d640.firebaseapp.com",
-  projectId: "automart-6d640"
+  apiKey: "AIzaSyBhT0ag7",
+  authDomain: "automart.firebaseapp.com",
+  projectId: "automart"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const ADMIN_EMAIL = "your-email@gmail.com";
-
 let cart = [];
+const ADMIN = "your-email@gmail.com";
 
-// USER
+/* AUTH */
 onAuthStateChanged(auth, (user) => {
-  const userText = document.getElementById("user");
-
-  if (user) {
-    if (user.email === ADMIN_EMAIL) {
-      userText.innerText = "👑 Admin: " + user.email;
-      window.isAdmin = true;
-    } else {
-      userText.innerText = "👤 " + user.email;
-      window.isAdmin = false;
-    }
-  } else {
-    userText.innerText = "Not logged in";
-    window.isAdmin = false;
-  }
+  document.getElementById("user").innerText =
+    user ? user.email : "Not logged in";
 });
 
-// AUTH
-window.register = async () => {
-  await createUserWithEmailAndPassword(auth, email(), pass());
-  alert("Registered");
-};
-
-window.login = async () => {
-  await signInWithEmailAndPassword(auth, email(), pass());
-  alert("Logged in");
-};
-
+window.login = () => signInWithEmailAndPassword(auth, email(), pass());
+window.register = () => createUserWithEmailAndPassword(auth, email(), pass());
 window.logout = () => signOut(auth);
 
-// ADD PART
+/* ADD PART */
 window.addPart = async () => {
-  if (!auth.currentUser) return alert("Login first");
+  const part = {
+    name: val("partName"),
+    price: Number(val("partPrice")),
+    shop: val("shopName"),
+    image: val("partImage")
+  };
 
-  const name = document.getElementById("partName").value;
-  const price = Number(document.getElementById("partPrice").value);
-  const shop = document.getElementById("shopName").value;
-  const image = document.getElementById("partImage").value;
-
-  navigator.geolocation.getCurrentPosition(async (pos) => {
-    const lat = pos.coords.latitude;
-    const lng = pos.coords.longitude;
-
-    await addDoc(collection(db, "parts"), {
-      name,
-      price,
-      shop,
-      image,
-      lat,
-      lng
-    });
-
-    alert("Added");
-    loadParts();
-    loadMapParts();
-  });
+  await addDoc(collection(db, "parts"), part);
+  loadParts();
 };
 
-// LOAD
+/* LOAD */
 async function loadParts() {
   const snap = await getDocs(collection(db, "parts"));
   let html = "";
 
-  snap.forEach(docSnap => {
-    html += card(docSnap.data(), docSnap.id);
-  });
+  snap.forEach(d => {
+    const p = d.data();
 
-  document.getElementById("results").innerHTML = html;
-}
-
-// CARD
-function card(p, id) {
-  return `
+    html += `
     <div class="card">
-      <img src="${p.image || ''}">
+      <img src="${p.image}">
       <h3>${p.name}</h3>
       <p>₹${p.price}</p>
       <small>${p.shop}</small>
 
-      <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
-
-      ${window.isAdmin ? `<button onclick="deletePart('${id}')">🗑 Delete</button>` : ""}
-    </div>
-  `;
-}
-
-// DELETE
-window.deletePart = async (id) => {
-  if (!window.isAdmin) return alert("Only admin");
-
-  await deleteDoc(doc(db, "parts", id));
-  alert("Deleted");
-  loadParts();
-};
-
-// CART
-window.addToCart = (name, price) => {
-  cart.push({ name, price });
-  updateCart();
-};
-
-function updateCart() {
-  let total = 0;
-  let html = "";
-
-  cart.forEach((item, i) => {
-    total += item.price;
-    html += `<p>${item.name} - ₹${item.price}</p>`;
-  });
-
-  document.getElementById("cart").innerHTML = html;
-  document.getElementById("total").innerText = total;
-};
-
-window.checkout = () => {
-  if (!auth.currentUser) return alert("Login first");
-  if (cart.length === 0) return alert("Cart empty");
-
-  alert("Payment Successful 🎉");
-  cart = [];
-  updateCart();
-};
-
-// SEARCH
-window.searchParts = async () => {
-  const q = document.getElementById("search").value.toLowerCase();
-  const snap = await getDocs(collection(db, "parts"));
-
-  let html = "";
-
-  snap.forEach(doc => {
-    const p = doc.data();
-    if (p.name.toLowerCase().includes(q)) {
-      html += card(p, doc.id);
-    }
+      <button onclick="addToCart('${p.name}',${p.price})">Add</button>
+      ${auth.currentUser?.email===ADMIN ? `<button onclick="deletePart('${d.id}')">Delete</button>`:''}
+    </div>`;
   });
 
   document.getElementById("results").innerHTML = html;
-};
-
-// MAP
-async function loadMapParts() {
-  const snap = await getDocs(collection(db, "parts"));
-
-  snap.forEach(doc => {
-    const p = doc.data();
-
-    if (p.lat && p.lng) {
-      new google.maps.Marker({
-        position: { lat: p.lat, lng: p.lng },
-        map: window.map
-      });
-    }
-  });
 }
 
-window.loadMapParts = loadMapParts;
+/* DELETE */
+window.deletePart = async (id) => {
+  await deleteDoc(doc(db,"parts",id));
+  loadParts();
+};
 
-// HELPERS
-const email = () => document.getElementById("email").value;
-const pass = () => document.getElementById("password").value;
+/* CART */
+window.addToCart = (name, price) => {
+  cart.push({name, price});
+  renderCart();
+};
 
-// INIT
+function renderCart(){
+  let total=0, html="";
+  cart.forEach(i=>{
+    total+=i.price;
+    html+=`<p>${i.name} - ₹${i.price}</p>`;
+  });
+  document.getElementById("cartItems").innerHTML=html;
+  document.getElementById("total").innerText=total;
+}
+
+window.toggleCart = () => {
+  document.getElementById("cartDrawer").classList.toggle("active");
+};
+
+window.checkout = () => {
+  alert("🎉 Payment Success");
+  cart=[];
+  renderCart();
+};
+
+/* SEARCH LIVE */
+document.getElementById("search").addEventListener("input", async (e)=>{
+  const q = e.target.value.toLowerCase();
+  const snap = await getDocs(collection(db,"parts"));
+  let html="";
+
+  snap.forEach(d=>{
+    const p=d.data();
+    if(p.name.toLowerCase().includes(q)){
+      html+=`<div class="card"><h3>${p.name}</h3></div>`;
+    }
+  });
+
+  document.getElementById("results").innerHTML=html;
+});
+
+/* HELPERS */
+const val = id => document.getElementById(id).value;
+const email = () => val("email");
+const pass = () => val("password");
+
 loadParts();
