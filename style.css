@@ -44,7 +44,7 @@ body {
 
 /* AUTH */
 .auth-section {
-  width: 300px;
+  width: 320px;
   margin: 30px auto;
   padding: 20px;
   background: #1e293b;
@@ -88,7 +88,7 @@ body {
   border-radius: 10px;
 }
 
-/* PRODUCTS GRID */
+/* PRODUCTS */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
