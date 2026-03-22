@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoMart Pro</title>
+<title>AutoMart</title>
 
 <link rel="stylesheet" href="style.css">
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -27,14 +27,12 @@
 <section class="auth">
   <h2>Login / Register</h2>
 
-  <div class="auth-box">
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
 
-    <div class="auth-buttons">
-      <button onclick="login()">Login</button>
-      <button onclick="register()">Register</button>
-    </div>
+  <div class="btns">
+    <button onclick="login()">Login</button>
+    <button onclick="register()">Register</button>
   </div>
 </section>
 
@@ -48,14 +46,14 @@
 <div id="map"></div>
 
 <!-- PRODUCTS -->
-<h2 class="title">🔥 Products</h2>
+<h2 class="title">Products</h2>
 <div id="results" class="grid"></div>
 
 <!-- CART -->
-<div id="cartDrawer" class="cart">
+<div id="cart" class="cart">
   <h2>🛒 Cart</h2>
   <div id="cartItems"></div>
-  <h3>Total: ₹<span id="total">0</span></h3>
+  <h3>Total ₹<span id="total">0</span></h3>
   <button onclick="checkout()">Checkout</button>
 </div>
 
@@ -63,27 +61,17 @@
 
 <!-- ADD PART -->
 <section class="add">
-  <h2>Add New Part</h2>
+  <h2>Add Part</h2>
+
   <input id="partName" placeholder="Part Name">
   <input id="partPrice" type="number" placeholder="Price">
   <input id="shopName" placeholder="Shop Name">
   <input id="partImage" placeholder="Image URL">
+
   <button onclick="addPart()">Add Part</button>
 </section>
 
-<!-- CHATBOT -->
-<div id="chatbot">
-  <div id="chat-header" onclick="toggleChat()">🤖 AutoBot</div>
-  <div id="chat-body">
-    <div id="chat-messages"></div>
-    <div class="chat-input">
-      <input id="chatInput" placeholder="Ask something...">
-      <button onclick="sendMessage()">Send</button>
-    </div>
-  </div>
-</div>
-
-<!-- MAP -->
+<!-- MAP SCRIPT -->
 <script>
 function initMap() {
   const map = new google.maps.Map(document.getElementById("map"), {
@@ -91,18 +79,16 @@ function initMap() {
     center: { lat: 19.2183, lng: 72.9781 }
   });
 
-  const shops = [
-    { lat: 19.21, lng: 72.97 },
-    { lat: 19.25, lng: 72.99 },
-    { lat: 19.20, lng: 72.95 }
-  ];
-
-  shops.forEach(loc => new google.maps.Marker({ position: loc, map }));
+  new google.maps.Marker({
+    position: { lat: 19.2183, lng: 72.9781 },
+    map
+  });
 }
 </script>
 
 <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo&callback=initMap"></script>
 
+<!-- IMPORTANT -->
 <script type="module" src="script.js"></script>
 
 </body>
