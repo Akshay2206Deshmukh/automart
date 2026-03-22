@@ -77,15 +77,19 @@
 function initMap() {
   const loc = { lat: 19.2183, lng: 72.9781 };
 
-  const map = new google.maps.Map(document.getElementById("map"), {
+  window.map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
     center: loc,
   });
 
   new google.maps.Marker({
     position: loc,
-    map: map
+    map: window.map
   });
+
+  if (window.loadMapParts) {
+    window.loadMapParts();
+  }
 }
 </script>
 
