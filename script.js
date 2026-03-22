@@ -24,6 +24,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// CART ARRAY
+let cart = [];
+
 // USER STATE
 onAuthStateChanged(auth, (user) => {
   document.getElementById("user").innerText =
@@ -65,6 +68,36 @@ window.addPart = async () => {
   loadParts();
 };
 
+// ADD TO CART
+window.addToCart = (name, price) => {
+  cart.push({ name, price });
+  updateCart();
+};
+
+// UPDATE CART UI
+function updateCart() {
+  let total = 0;
+  let html = "";
+
+  cart.forEach((item, index) => {
+    total += item.price;
+
+    html += `
+      <p>${item.name} - ₹${item.price}
+      <button onclick="removeItem(${index})">❌</button></p>
+    `;
+  });
+
+  document.getElementById("cart").innerHTML = html;
+  document.getElementById("total").innerText = total;
+}
+
+// REMOVE ITEM
+window.removeItem = (index) => {
+  cart.splice(index, 1);
+  updateCart();
+};
+
 // SEARCH
 window.searchParts = async () => {
   const q = document.getElementById("search").value.toLowerCase();
@@ -89,13 +122,14 @@ async function loadParts() {
   document.getElementById("results").innerHTML = html;
 }
 
-// CARD
+// CARD UI
 function card(p) {
   return `
     <div class="card">
       <h3>${p.name}</h3>
       <p>₹${p.price}</p>
       <small>${p.shop}</small>
+      <button onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
     </div>
   `;
 }
@@ -109,5 +143,12 @@ loadParts();
 
 // CHECKOUT
 window.checkout = () => {
-  alert("Checkout coming soon 🚀");
+  if (cart.length === 0) {
+    alert("Cart is empty ❌");
+    return;
+  }
+
+  alert("Order placed successfully ✅");
+  cart = [];
+  updateCart();
 };
