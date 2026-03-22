@@ -17,7 +17,7 @@ import {
 const firebaseConfig = {
   apiKey: "AIzaSyBhT0ag7_G567gV2uYvqKbXUARwWzDsDZg",
   authDomain: "automart-6d640.firebaseapp.com",
-  projectId: "automart-6d640",
+  projectId: "automart-6d640"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -30,29 +30,22 @@ onAuthStateChanged(auth, (user) => {
     user ? "👤 " + user.email : "Not logged in";
 });
 
-// REGISTER
+// AUTH
 window.register = async () => {
-  const email = emailInput();
-  const pass = passInput();
-  await createUserWithEmailAndPassword(auth, email, pass);
+  await createUserWithEmailAndPassword(auth, email(), pass());
   alert("Registered");
 };
 
-// LOGIN
 window.login = async () => {
-  const email = emailInput();
-  const pass = passInput();
-  await signInWithEmailAndPassword(auth, email, pass);
+  await signInWithEmailAndPassword(auth, email(), pass());
   alert("Logged in");
 };
 
-// LOGOUT
 window.logout = () => signOut(auth);
 
 // ADD PART
 window.addPart = async () => {
-  const user = auth.currentUser;
-  if (!user) return alert("Login first");
+  if (!auth.currentUser) return alert("Login first");
 
   await addDoc(collection(db, "parts"), {
     name: document.getElementById("partName").value,
@@ -70,12 +63,9 @@ window.searchParts = async () => {
   const snap = await getDocs(collection(db, "parts"));
 
   let html = "";
-
   snap.forEach(doc => {
     const p = doc.data();
-    if (p.name.toLowerCase().includes(q)) {
-      html += card(p);
-    }
+    if (p.name.toLowerCase().includes(q)) html += card(p);
   });
 
   document.getElementById("results").innerHTML = html;
@@ -103,13 +93,8 @@ function card(p) {
 }
 
 // HELPERS
-function emailInput() {
-  return document.getElementById("email").value;
-}
-
-function passInput() {
-  return document.getElementById("password").value;
-}
+const email = () => document.getElementById("email").value;
+const pass = () => document.getElementById("password").value;
 
 // AUTO LOAD
 loadParts();
