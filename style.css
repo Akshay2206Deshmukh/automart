@@ -1,13 +1,13 @@
 body {
+  font-family: Arial;
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
+  background: #0f172a;
   color: white;
 }
 
 .navbar {
-  background: #020617;
-  padding: 15px;
+  background: black;
+  padding: 10px;
 }
 
 .nav-container {
@@ -16,74 +16,47 @@ body {
   align-items: center;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
+input {
+  padding: 10px;
+  margin: 5px;
+  width: 250px;
 }
 
-.search-container input {
+button {
   padding: 10px;
-  border-radius: 6px;
-  border: none;
-}
-
-.search-btn {
-  padding: 10px;
-  margin-left: 5px;
-  background: #2563eb;
+  background: #3b82f6;
   border: none;
   color: white;
   cursor: pointer;
-}
-
-.user-section {
-  display: flex;
-  gap: 10px;
 }
 
 .hero {
   text-align: center;
-  margin: 40px 0;
+  padding: 40px;
 }
 
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
+#map {
+  height: 400px;
+  width: 90%;
+  margin: auto;
+}
+
+.grid {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
   padding: 20px;
 }
 
-.product-card {
+.card {
   background: #1e293b;
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-
-.product-name {
-  font-size: 18px;
-  margin: 10px 0;
-}
-
-.product-price {
-  color: #22c55e;
-}
-
-.add-part-section {
   padding: 20px;
+  border-radius: 10px;
+  width: 150px;
+  text-align: center;
 }
 
-.form-group input {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-}
-
-.add-part-btn {
-  background: #16a34a;
-  padding: 10px;
-  border: none;
-  color: white;
-  cursor: pointer;
+.auth-section {
+  text-align: center;
+  margin: 20px;
 }
