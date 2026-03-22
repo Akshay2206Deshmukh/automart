@@ -593,3 +593,11 @@ body {
 .card-content h3 {
     font-size: 1.4rem;
    
+.green-btn {
+  background: #22c55e;
+  padding: 12px 20px;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
