@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoMart</title>
+<title>AutoMart AI</title>
 
 <link rel="stylesheet" href="style.css">
 </head>
@@ -70,6 +70,20 @@
   <input id="partImage" placeholder="Image URL">
   <button onclick="addPart()">Add Part</button>
 </section>
+
+<!-- 🤖 CHATBOT -->
+<div id="chatbot">
+  <div id="chat-header" onclick="toggleChat()">🤖 AutoBot</div>
+
+  <div id="chat-body">
+    <div id="chat-messages"></div>
+
+    <div class="chat-input">
+      <input id="chatInput" placeholder="Ask something...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
 
 <!-- MAP SCRIPT -->
 <script>
