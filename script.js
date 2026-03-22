@@ -24,10 +24,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// CART ARRAY
 let cart = [];
 
-// USER STATE
+// USER
 onAuthStateChanged(auth, (user) => {
   document.getElementById("user").innerText =
     user ? "👤 " + user.email : "Not logged in";
@@ -35,21 +34,13 @@ onAuthStateChanged(auth, (user) => {
 
 // AUTH
 window.register = async () => {
-  try {
-    await createUserWithEmailAndPassword(auth, email(), pass());
-    alert("Registered");
-  } catch (e) {
-    alert(e.message);
-  }
+  await createUserWithEmailAndPassword(auth, email(), pass());
+  alert("Registered");
 };
 
 window.login = async () => {
-  try {
-    await signInWithEmailAndPassword(auth, email(), pass());
-    alert("Logged in");
-  } catch (e) {
-    alert(e.message);
-  }
+  await signInWithEmailAndPassword(auth, email(), pass());
+  alert("Logged in");
 };
 
 window.logout = () => signOut(auth);
@@ -68,33 +59,57 @@ window.addPart = async () => {
   loadParts();
 };
 
-// ADD TO CART
+// LOAD
+async function loadParts() {
+  const snap = await getDocs(collection(db, "parts"));
+  let html = "";
+
+  snap.forEach(doc => html += card(doc.data()));
+
+  document.getElementById("results").innerHTML = html;
+}
+
+// CARD
+function card(p) {
+  return `
+    <div class="card">
+      <h3>${p.name}</h3>
+      <p>₹${p.price}</p>
+      <small>${p.shop}</small>
+      <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
+    </div>
+  `;
+}
+
+// CART
 window.addToCart = (name, price) => {
   cart.push({ name, price });
   updateCart();
 };
 
-// UPDATE CART UI
 function updateCart() {
   let total = 0;
   let html = "";
 
-  cart.forEach((item, index) => {
+  cart.forEach((item, i) => {
     total += item.price;
-
-    html += `
-      <p>${item.name} - ₹${item.price}
-      <button onclick="removeItem(${index})">❌</button></p>
-    `;
+    html += `<p>${item.name} - ₹${item.price}
+      <button onclick="removeItem(${i})">❌</button></p>`;
   });
 
   document.getElementById("cart").innerHTML = html;
   document.getElementById("total").innerText = total;
 }
 
-// REMOVE ITEM
-window.removeItem = (index) => {
-  cart.splice(index, 1);
+window.removeItem = (i) => {
+  cart.splice(i, 1);
+  updateCart();
+};
+
+window.checkout = () => {
+  if (cart.length === 0) return alert("Cart empty ❌");
+  alert("Order placed ✅");
+  cart = [];
   updateCart();
 };
 
@@ -112,43 +127,9 @@ window.searchParts = async () => {
   document.getElementById("results").innerHTML = html;
 };
 
-// LOAD
-async function loadParts() {
-  const snap = await getDocs(collection(db, "parts"));
-  let html = "";
-
-  snap.forEach(doc => html += card(doc.data()));
-
-  document.getElementById("results").innerHTML = html;
-}
-
-// CARD UI
-function card(p) {
-  return `
-    <div class="card">
-      <h3>${p.name}</h3>
-      <p>₹${p.price}</p>
-      <small>${p.shop}</small>
-      <button onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
-    </div>
-  `;
-}
-
 // HELPERS
 const email = () => document.getElementById("email").value;
 const pass = () => document.getElementById("password").value;
 
 // INIT
 loadParts();
-
-// CHECKOUT
-window.checkout = () => {
-  if (cart.length === 0) {
-    alert("Cart is empty ❌");
-    return;
-  }
-
-  alert("Order placed successfully ✅");
-  cart = [];
-  updateCart();
-};
