@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoMart Pro</title>
+<title>AutoMart</title>
 
 <link rel="stylesheet" href="style.css">
 </head>
@@ -25,10 +25,16 @@
 <!-- LOGIN -->
 <section class="auth">
   <h2>Login / Register</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
+
+  <div class="auth-box">
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <div class="auth-buttons">
+      <button onclick="login()">Login</button>
+      <button onclick="register()">Register</button>
+    </div>
+  </div>
 </section>
 
 <!-- HERO -->
@@ -45,7 +51,7 @@
 <h2 class="title">🔥 Products</h2>
 <div id="results" class="grid"></div>
 
-<!-- CART DRAWER -->
+<!-- CART -->
 <div id="cartDrawer" class="cart">
   <h2>🛒 Cart</h2>
   <div id="cartItems"></div>
@@ -65,18 +71,17 @@
   <button onclick="addPart()">Add Part</button>
 </section>
 
+<!-- MAP SCRIPT -->
 <script>
 function initMap() {
   const loc = { lat: 19.2183, lng: 72.9781 };
 
-  window.map = new google.maps.Map(document.getElementById("map"), {
+  const map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
     center: loc
   });
 
   new google.maps.Marker({ position: loc, map });
-
-  if (window.loadMapParts) window.loadMapParts();
 }
 </script>
 
