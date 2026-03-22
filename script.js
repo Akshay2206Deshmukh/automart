@@ -25,6 +25,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 let cart = [];
+let allParts = [];
 
 // USER
 onAuthStateChanged(auth, (user) => {
@@ -35,19 +36,19 @@ onAuthStateChanged(auth, (user) => {
 // AUTH
 window.register = async () => {
   await createUserWithEmailAndPassword(auth, email(), pass());
-  alert("Registered");
+  alert("Registered ✅");
 };
 
 window.login = async () => {
   await signInWithEmailAndPassword(auth, email(), pass());
-  alert("Logged in");
+  alert("Logged in ✅");
 };
 
 window.logout = () => signOut(auth);
 
 // ADD PART WITH LOCATION
 window.addPart = async () => {
-  if (!auth.currentUser) return alert("Login first");
+  if (!auth.currentUser) return alert("Login first ❌");
 
   const name = document.getElementById("partName").value;
   const price = Number(document.getElementById("partPrice").value);
@@ -65,7 +66,7 @@ window.addPart = async () => {
       lng
     });
 
-    alert("Part added 📍");
+    alert("Part added with location 📍");
     loadParts();
     loadMapParts();
   });
@@ -75,8 +76,13 @@ window.addPart = async () => {
 async function loadParts() {
   const snap = await getDocs(collection(db, "parts"));
   let html = "";
+  allParts = [];
 
-  snap.forEach(doc => html += card(doc.data()));
+  snap.forEach(doc => {
+    const data = doc.data();
+    allParts.push(data);
+    html += card(data);
+  });
 
   document.getElementById("results").innerHTML = html;
 }
@@ -88,7 +94,7 @@ function card(p) {
       <h3>${p.name}</h3>
       <p>₹${p.price}</p>
       <small>${p.shop}</small>
-      <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
+      <button onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
     </div>
   `;
 }
@@ -118,23 +124,49 @@ window.removeItem = (i) => {
   updateCart();
 };
 
+// 💳 FAKE PAYMENT SYSTEM (DEMO READY)
 window.checkout = () => {
+  if (!auth.currentUser) return alert("Login required ❌");
+
   if (cart.length === 0) return alert("Cart empty ❌");
-  alert("Order placed ✅");
-  cart = [];
-  updateCart();
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+  // Fake payment popup
+  const confirmPay = confirm(`Pay ₹${total} ?`);
+
+  if (confirmPay) {
+    alert("✅ Payment Successful!");
+    cart = [];
+    updateCart();
+  } else {
+    alert("❌ Payment Cancelled");
+  }
 };
 
-// SEARCH
+// 🔍 SMART SEARCH + AI SUGGESTION
 window.searchParts = async () => {
   const q = document.getElementById("search").value.toLowerCase();
-  const snap = await getDocs(collection(db, "parts"));
 
   let html = "";
-  snap.forEach(doc => {
-    const p = doc.data();
-    if (p.name.toLowerCase().includes(q)) html += card(p);
+  let suggestions = [];
+
+  allParts.forEach(p => {
+    if (p.name.toLowerCase().includes(q)) {
+      html += card(p);
+    } else {
+      suggestions.push(p);
+    }
   });
+
+  // If no result → show AI suggestion
+  if (!html) {
+    html = `<p style="text-align:center;">No exact match 😢<br>Showing suggestions 👇</p>`;
+
+    suggestions.slice(0, 3).forEach(p => {
+      html += card(p);
+    });
+  }
 
   document.getElementById("results").innerHTML = html;
 };
