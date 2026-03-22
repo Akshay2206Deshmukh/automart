@@ -1,7 +1,6 @@
-// 🔥 FIREBASE IMPORTS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, getDocs
+  getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
@@ -13,210 +12,143 @@ import {
   getStorage, ref, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-// 🔥 CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBhT0ag7_G567gV2uYvqKbXUARwWzDsDZg",
   authDomain: "automart-6d640.firebaseapp.com",
   projectId: "automart-6d640"
 };
 
-// 🚀 INIT
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
-// =============================
-// 👤 USER STATE
-// =============================
+// USER
 onAuthStateChanged(auth, user => {
-  document.getElementById("user").innerText =
-    user ? "👤 " + user.email : "Not logged in";
+  userDiv.innerText = user ? user.email : "Not logged in";
 });
 
-// =============================
-// 🔐 AUTH
-// =============================
+// AUTH
 window.login = async () => {
-  try {
-    await signInWithEmailAndPassword(auth, email(), pass());
-    alert("✅ Logged in");
-  } catch (e) {
-    alert("❌ " + e.message);
-  }
+  await signInWithEmailAndPassword(auth, email(), pass());
 };
 
 window.register = async () => {
-  try {
-    await createUserWithEmailAndPassword(auth, email(), pass());
-    alert("✅ Registered");
-  } catch (e) {
-    alert("❌ " + e.message);
-  }
+  await createUserWithEmailAndPassword(auth, email(), pass());
 };
 
 window.logout = () => signOut(auth);
 
-// =============================
-// 🛒 CART
-// =============================
+// CART
 let cart = [];
 
-function addToCart(name, price) {
+window.addToCart = (name, price) => {
   cart.push({ name, price });
   renderCart();
-}
-
-function removeFromCart(index) {
-  cart.splice(index, 1);
-  renderCart();
-}
+};
 
 function renderCart() {
-  let html = "";
-  let total = 0;
+  let html = "", total = 0;
 
   cart.forEach((item, i) => {
     total += item.price;
-
-    html += `
-      <div class="card">
-        <h3>${item.name}</h3>
-        <p>₹${item.price}</p>
-        <button onclick="removeFromCart(${i})">❌ Remove</button>
-      </div>
-    `;
+    html += `<div class="card">${item.name} ₹${item.price}
+    <button onclick="removeFromCart(${i})">X</button></div>`;
   });
 
-  document.getElementById("cartItems").innerHTML =
-    html || "<p>No items in cart</p>";
-
-  document.getElementById("total").innerText = "Total: ₹" + total;
+  cartItems.innerHTML = html;
+  total.innerText = "Total: ₹" + total;
 }
 
-// =============================
-// 💳 CHECKOUT
-// =============================
+window.removeFromCart = i => {
+  cart.splice(i, 1);
+  renderCart();
+};
+
+// CHECKOUT
 window.checkout = () => {
-  if (cart.length === 0) return alert("Cart empty!");
-
-  let html = "";
-  let total = 0;
-
-  cart.forEach(item => {
-    total += item.price;
-    html += `<p>${item.name} - ₹${item.price}</p>`;
-  });
-
-  document.getElementById("orderDetails").innerHTML = html;
-  document.getElementById("finalTotal").innerText = "Total: ₹" + total;
-  document.getElementById("checkoutBox").style.display = "block";
+  checkoutBox.style.display = "block";
 };
 
 window.closeCheckout = () => {
-  document.getElementById("checkoutBox").style.display = "none";
+  checkoutBox.style.display = "none";
 };
 
 window.confirmOrder = () => {
-  alert("🎉 Payment Successful!");
+  alert("Payment Done!");
   cart = [];
   renderCart();
-  closeCheckout();
 };
 
-// =============================
-// ➕ ADD PART WITH IMAGE
-// =============================
+// ADD PART
 window.addPart = async () => {
-  if (!auth.currentUser) return alert("Login first");
-
-  const name = partName.value;
-  const price = Number(partPrice.value);
-  const shop = shopName.value;
   const file = partImage.files[0];
 
-  if (!name || !price || !shop) {
-    return alert("Fill all fields");
-  }
-
   let imageUrl = "";
-
   if (file) {
-    const storageRef = ref(storage, "parts/" + Date.now() + file.name);
+    const storageRef = ref(storage, file.name);
     await uploadBytes(storageRef, file);
     imageUrl = await getDownloadURL(storageRef);
   }
 
   await addDoc(collection(db, "parts"), {
-    name,
-    price,
-    shop,
-    image: imageUrl
+    name: partName.value,
+    price: Number(partPrice.value),
+    shop: shopName.value,
+    image: imageUrl,
+    owner: auth.currentUser?.email
   });
-
-  alert("✅ Part added");
-
-  // clear inputs
-  partName.value = "";
-  partPrice.value = "";
-  shopName.value = "";
-  partImage.value = "";
 
   loadParts();
 };
 
-// =============================
-// 🔍 SEARCH
-// =============================
+// LOAD
+async function loadParts() {
+  const snap = await getDocs(collection(db, "parts"));
+
+  let html = "";
+  snap.forEach(doc => {
+    const p = doc.data();
+
+    html += `
+    <div class="card">
+      <img src="${p.image || ''}">
+      <h3>${p.name}</h3>
+      <p>₹${p.price}</p>
+      <small>${p.shop}</small>
+      <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
+      <button onclick="deletePart('${doc.id}')">Delete</button>
+    </div>`;
+  });
+
+  results.innerHTML = html;
+}
+
+// DELETE
+window.deletePart = async id => {
+  await deleteDoc(doc(db, "parts", id));
+  loadParts();
+};
+
+// SEARCH
 window.searchParts = async () => {
   const q = search.value.toLowerCase();
   const snap = await getDocs(collection(db, "parts"));
 
   let html = "";
-
   snap.forEach(doc => {
     const p = doc.data();
-    if (p.name.toLowerCase().includes(q)) html += card(p);
+    if (p.name.toLowerCase().includes(q)) {
+      html += `<div class="card">${p.name}</div>`;
+    }
   });
 
-  document.getElementById("results").innerHTML =
-    html || "<p>No results</p>";
+  results.innerHTML = html;
 };
 
-// =============================
-// 📦 LOAD PARTS
-// =============================
-async function loadParts() {
-  const snap = await getDocs(collection(db, "parts"));
+// HELPERS
+const email = () => email.value;
+const pass = () => password.value;
 
-  let html = "";
-  snap.forEach(doc => html += card(doc.data()));
-
-  document.getElementById("results").innerHTML = html;
-}
-
-// =============================
-// 🎨 CARD UI
-// =============================
-function card(p) {
-  return `
-    <div class="card">
-      <img src="${p.image || 'https://via.placeholder.com/200'}">
-      <h3>${p.name}</h3>
-      <p>₹${p.price}</p>
-      <small>${p.shop}</small>
-      <button onclick="addToCart('${p.name}', ${p.price})">
-        🛒 Add to Cart
-      </button>
-    </div>
-  `;
-}
-
-// =============================
-// 🔧 HELPERS
-// =============================
-const email = () => document.getElementById("email").value;
-const pass = () => document.getElementById("password").value;
-
-// =============================
+// INIT
 loadParts();
