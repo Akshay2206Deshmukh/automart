@@ -1,119 +1,87 @@
 body {
   margin: 0;
-  font-family: 'Segoe UI';
-  background: linear-gradient(135deg,#0f172a,#1e293b);
-  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #f8fafc;
+  min-height: 100vh;
 }
 
-/* NAV */
+/* Glassmorphism Navbar */
 .navbar {
   display: flex;
-  justify-content: space-around;
-  padding: 15px;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 5%;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .navbar input {
-  padding: 10px;
+  padding: 10px 20px;
   border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  outline: none;
+  transition: border 0.3s;
 }
 
-/* AUTH */
-.auth {
-  text-align: center;
-  margin-top: 30px;
+.navbar input:focus {
+  border: 1px solid #22c55e;
 }
 
-.auth input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-  width: 250px;
-}
-
-.auth-btns button {
-  margin: 5px;
-}
-
-/* HERO */
-.hero {
-  text-align: center;
-  padding: 40px;
-}
-
-/* GRID */
+/* Premium Product Cards */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  padding: 40px 5%;
 }
 
-/* CARD */
 .card {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.03);
   padding: 20px;
-  border-radius: 15px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   text-align: center;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .card:hover {
-  transform: scale(1.05);
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .card img {
   width: 100%;
-  height: 150px;
+  height: 180px;
   object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
 }
 
-/* BUTTON */
+/* Modern Buttons */
 button {
   background: #22c55e;
-  padding: 10px;
+  color: #111;
+  font-weight: bold;
+  padding: 10px 20px;
   border: none;
   border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
 }
 
-/* CART */
-.cart {
-  position: fixed;
-  right: -300px;
-  top: 0;
-  width: 300px;
-  height: 100%;
-  background: #111;
-  padding: 20px;
-  transition: 0.3s;
+button:hover {
+  background: #16a34a;
 }
 
-.cart.active {
-  right: 0;
-}
-
-.cartBtn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-}
-
-/* ADD */
-.add {
-  text-align: center;
-  padding: 40px;
-}
-
-/* CHAT */
-#chatbot {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-}
-
-#chat-body {
-  display: none;
-  background: #111;
-  padding: 10px;
+button:active {
+  transform: scale(0.95);
 }
