@@ -1,11 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBhT0ag7",
-  authDomain: "automart.firebaseapp.com",
-  projectId: "automart"
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -13,7 +13,6 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 let cart = [];
-const ADMIN = "your-email@gmail.com";
 
 /* AUTH */
 onAuthStateChanged(auth, (user) => {
@@ -27,14 +26,13 @@ window.logout = () => signOut(auth);
 
 /* ADD PART */
 window.addPart = async () => {
-  const part = {
+  await addDoc(collection(db, "parts"), {
     name: val("partName"),
     price: Number(val("partPrice")),
     shop: val("shopName"),
     image: val("partImage")
-  };
+  });
 
-  await addDoc(collection(db, "parts"), part);
   loadParts();
 };
 
@@ -48,24 +46,16 @@ async function loadParts() {
 
     html += `
     <div class="card">
-      <img src="${p.image}">
+      <img src="${p.image || 'https://via.placeholder.com/150'}">
       <h3>${p.name}</h3>
       <p>₹${p.price}</p>
       <small>${p.shop}</small>
-
       <button onclick="addToCart('${p.name}',${p.price})">Add</button>
-      ${auth.currentUser?.email===ADMIN ? `<button onclick="deletePart('${d.id}')">Delete</button>`:''}
     </div>`;
   });
 
   document.getElementById("results").innerHTML = html;
 }
-
-/* DELETE */
-window.deletePart = async (id) => {
-  await deleteDoc(doc(db,"parts",id));
-  loadParts();
-};
 
 /* CART */
 window.addToCart = (name, price) => {
@@ -88,12 +78,12 @@ window.toggleCart = () => {
 };
 
 window.checkout = () => {
-  alert("🎉 Payment Success");
+  alert("Payment Successful ✅");
   cart=[];
   renderCart();
 };
 
-/* SEARCH LIVE */
+/* SEARCH */
 document.getElementById("search").addEventListener("input", async (e)=>{
   const q = e.target.value.toLowerCase();
   const snap = await getDocs(collection(db,"parts"));
