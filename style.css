@@ -180,3 +180,27 @@ section button {
 section button:hover {
   background: #16a34a;
 }
+.checkout-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 25px;
+  background: #f43f5e;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.checkout-box {
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%);
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  z-index: 1000;
+}
