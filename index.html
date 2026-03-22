@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoMart AI</title>
+<title>AutoMart Pro</title>
 
 <link rel="stylesheet" href="style.css">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
@@ -40,7 +41,6 @@
 <!-- HERO -->
 <section class="hero">
   <h1>🚀 Find Perfect Spare Parts</h1>
-  <p>Fast • Trusted • Nearby</p>
 </section>
 
 <!-- MAP -->
@@ -74,10 +74,8 @@
 <!-- 🤖 CHATBOT -->
 <div id="chatbot">
   <div id="chat-header" onclick="toggleChat()">🤖 AutoBot</div>
-
   <div id="chat-body">
     <div id="chat-messages"></div>
-
     <div class="chat-input">
       <input id="chatInput" placeholder="Ask something...">
       <button onclick="sendMessage()">Send</button>
@@ -88,14 +86,20 @@
 <!-- MAP SCRIPT -->
 <script>
 function initMap() {
-  const loc = { lat: 19.2183, lng: 72.9781 };
-
   const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 12,
-    center: loc
+    zoom: 11,
+    center: { lat: 19.2183, lng: 72.9781 }
   });
 
-  new google.maps.Marker({ position: loc, map });
+  const shops = [
+    { lat: 19.21, lng: 72.97 },
+    { lat: 19.25, lng: 72.99 },
+    { lat: 19.20, lng: 72.95 }
+  ];
+
+  shops.forEach(loc => {
+    new google.maps.Marker({ position: loc, map });
+  });
 }
 </script>
 
