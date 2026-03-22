@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc
+  getFirestore, collection, addDoc, getDocs, deleteDoc, doc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
@@ -12,12 +12,14 @@ import {
   getStorage, ref, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+// CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBhT0ag7_G567gV2uYvqKbXUARwWzDsDZg",
   authDomain: "automart-6d640.firebaseapp.com",
   projectId: "automart-6d640"
 };
 
+// INIT
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -25,7 +27,8 @@ const storage = getStorage(app);
 
 // USER
 onAuthStateChanged(auth, user => {
-  userDiv.innerText = user ? user.email : "Not logged in";
+  document.getElementById("user").innerText =
+    user ? user.email : "Not logged in";
 });
 
 // AUTH
@@ -56,8 +59,8 @@ function renderCart() {
     <button onclick="removeFromCart(${i})">X</button></div>`;
   });
 
-  cartItems.innerHTML = html;
-  total.innerText = "Total: ₹" + total;
+  document.getElementById("cartItems").innerHTML = html;
+  document.getElementById("total").innerText = "Total: ₹" + total;
 }
 
 window.removeFromCart = i => {
@@ -65,24 +68,9 @@ window.removeFromCart = i => {
   renderCart();
 };
 
-// CHECKOUT
-window.checkout = () => {
-  checkoutBox.style.display = "block";
-};
-
-window.closeCheckout = () => {
-  checkoutBox.style.display = "none";
-};
-
-window.confirmOrder = () => {
-  alert("Payment Done!");
-  cart = [];
-  renderCart();
-};
-
 // ADD PART
 window.addPart = async () => {
-  const file = partImage.files[0];
+  const file = document.getElementById("partImage").files[0];
 
   let imageUrl = "";
   if (file) {
@@ -95,14 +83,13 @@ window.addPart = async () => {
     name: partName.value,
     price: Number(partPrice.value),
     shop: shopName.value,
-    image: imageUrl,
-    owner: auth.currentUser?.email
+    image: imageUrl
   });
 
   loadParts();
 };
 
-// LOAD
+// LOAD PARTS
 async function loadParts() {
   const snap = await getDocs(collection(db, "parts"));
 
@@ -121,7 +108,7 @@ async function loadParts() {
     </div>`;
   });
 
-  results.innerHTML = html;
+  document.getElementById("results").innerHTML = html;
 }
 
 // DELETE
@@ -143,12 +130,12 @@ window.searchParts = async () => {
     }
   });
 
-  results.innerHTML = html;
+  document.getElementById("results").innerHTML = html;
 };
 
 // HELPERS
-const email = () => email.value;
-const pass = () => password.value;
+const email = () => document.getElementById("email").value;
+const pass = () => document.getElementById("password").value;
 
 // INIT
 loadParts();
