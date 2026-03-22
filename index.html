@@ -71,7 +71,7 @@
   <button onclick="addPart()">Add Part</button>
 </section>
 
-<!-- 🤖 CHATBOT -->
+<!-- CHATBOT -->
 <div id="chatbot">
   <div id="chat-header" onclick="toggleChat()">🤖 AutoBot</div>
   <div id="chat-body">
@@ -83,7 +83,7 @@
   </div>
 </div>
 
-<!-- MAP SCRIPT -->
+<!-- MAP -->
 <script>
 function initMap() {
   const map = new google.maps.Map(document.getElementById("map"), {
@@ -97,9 +97,7 @@ function initMap() {
     { lat: 19.20, lng: 72.95 }
   ];
 
-  shops.forEach(loc => {
-    new google.maps.Marker({ position: loc, map });
-  });
+  shops.forEach(loc => new google.maps.Marker({ position: loc, map }));
 }
 </script>
 
