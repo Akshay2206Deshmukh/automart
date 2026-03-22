@@ -16,11 +16,11 @@
     <div class="logo">🚗 AutoMart</div>
 
     <div class="search-container">
-      <input id="search" placeholder="Search parts...">
+      <input id="search" type="text" placeholder="Search parts...">
       <button onclick="searchParts()">🔍</button>
     </div>
 
-    <div>
+    <div class="user-section">
       <span id="user">Not logged in</span>
       <button onclick="logout()">Logout</button>
     </div>
@@ -30,10 +30,12 @@
 <!-- LOGIN -->
 <section class="auth-section">
   <h2>Login / Register</h2>
-  <input id="email" placeholder="Email">
+  <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
+  <div>
+    <button onclick="login()">Login</button>
+    <button onclick="register()">Register</button>
+  </div>
 </section>
 
 <!-- HERO -->
@@ -53,7 +55,7 @@
 <h2 class="center">Cart</h2>
 <div id="cartItems" class="grid"></div>
 <h3 id="total" class="center">Total: ₹0</h3>
-<button onclick="checkout()">💳 Checkout</button>
+<button class="center-btn" onclick="checkout()">💳 Checkout</button>
 
 <!-- ADD PART -->
 <h2 class="center">Add Part</h2>
@@ -61,7 +63,7 @@
 <input id="partPrice" type="number" placeholder="Price">
 <input id="shopName" placeholder="Shop Name">
 <input id="partImage" type="file">
-<button onclick="addPart()">Add Part</button>
+<button class="center-btn" onclick="addPart()">Add Part</button>
 
 <!-- CHECKOUT POPUP -->
 <div id="checkoutBox" class="popup">
@@ -72,7 +74,7 @@
   <button onclick="closeCheckout()">Close</button>
 </div>
 
-<!-- GOOGLE MAP -->
+<!-- MAP SCRIPT -->
 <script>
 function initMap() {
   const loc = { lat: 19.2183, lng: 72.9781 };
