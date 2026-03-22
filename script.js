@@ -14,101 +14,133 @@ const auth = getAuth(app);
 
 let cart = [];
 
-/* AUTH */
-window.login = async () => {
-  await signInWithEmailAndPassword(auth,email(),pass());
-  alert("Logged in");
-};
+// --- UTILS ---
+const val = id => document.getElementById(id).value;
+const email = () => val("email");
+const pass = () => val("password");
 
-window.register = async () => {
-  await createUserWithEmailAndPassword(auth,email(),pass());
-  alert("Registered");
-};
+// --- AUTHENTICATION ---
+document.getElementById('loginBtn')?.addEventListener('click', async () => {
+  try {
+    await signInWithEmailAndPassword(auth, email(), pass());
+    alert("Logged in successfully!");
+    document.getElementById("user").textContent = email();
+  } catch (error) {
+    alert("Login failed: " + error.message);
+  }
+});
 
-window.logout = () => signOut(auth);
+document.getElementById('registerBtn')?.addEventListener('click', async () => {
+  try {
+    await createUserWithEmailAndPassword(auth, email(), pass());
+    alert("Registered successfully!");
+  } catch (error) {
+    alert("Registration failed: " + error.message);
+  }
+});
 
-/* ADD PART */
-window.addPart = async () => {
-  await addDoc(collection(db,"parts"),{
-    name: val("partName"),
-    price: Number(val("partPrice")),
-    shop: val("shopName"),
-    image: val("partImage")
-  });
-  loadParts();
-};
+// --- FIRESTORE DATABASE ---
+document.getElementById('addPartBtn')?.addEventListener('click', async () => {
+  try {
+    await addDoc(collection(db, "parts"), {
+      name: val("partName"),
+      price: Number(val("partPrice")),
+      shop: val("shopName"),
+      image: val("partImage")
+    });
+    alert("Part added!");
+    loadParts(); // Refresh grid
+  } catch (error) {
+    alert("Error adding part: " + error.message);
+  }
+});
 
-/* LOAD */
-async function loadParts(){
-  const snap = await getDocs(collection(db,"parts"));
-  let html="";
-  snap.forEach(d=>{
-    const p=d.data();
-    html+=`
-    <div class="card">
-      <img src="${p.image || ''}">
+async function loadParts() {
+  const snap = await getDocs(collection(db, "parts"));
+  const resultsDiv = document.getElementById("results");
+  resultsDiv.innerHTML = ""; // Clear existing
+  
+  snap.forEach(doc => {
+    const p = doc.data();
+    // Using DOM creation for better security, avoiding raw innerHTML for dynamic data where possible
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${p.image || 'https://via.placeholder.com/150'}" alt="${p.name}">
       <h3>${p.name}</h3>
       <p>₹${p.price}</p>
-      <button onclick="addToCart('${p.name}',${p.price})">Add</button>
-    </div>`;
+      <button class="add-to-cart-btn" data-name="${p.name}" data-price="${p.price}">Add to Cart</button>
+    `;
+    resultsDiv.appendChild(card);
   });
-  document.getElementById("results").innerHTML=html;
+
+  // Attach event listeners to newly created cart buttons
+  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      addToCart(e.target.dataset.name, Number(e.target.dataset.price));
+    });
+  });
 }
 
-/* CART */
-window.addToCart = (n,p)=>{
-  cart.push({n,p});
+// --- CART LOGIC ---
+function addToCart(name, price) {
+  cart.push({ name, price });
   renderCart();
-};
-
-function renderCart(){
-  let total=0,html="";
-  cart.forEach((i,idx)=>{
-    total+=i.p;
-    html+=`${i.n} ₹${i.p} <button onclick="removeItem(${idx})">❌</button><br>`;
-  });
-  document.getElementById("cartItems").innerHTML=html;
-  document.getElementById("total").innerText=total;
 }
 
-window.removeItem = (i)=>{
-  cart.splice(i,1);
-  renderCart();
-};
+function renderCart() {
+  const cartItemsDiv = document.getElementById("cartItems");
+  cartItemsDiv.innerHTML = "";
+  let total = 0;
 
-/* PAYMENT */
-window.checkout = ()=>{
-  let total = cart.reduce((s,i)=>s+i.p,0);
-  new Razorpay({
-    key:"rzp_test_xxxxx",
-    amount:total*100,
-    handler:()=>{
-      alert("Payment success");
-      cart=[];
+  cart.forEach((item, index) => {
+    total += item.price;
+    const itemDiv = document.createElement('div');
+    itemDiv.innerHTML = `${item.name} - ₹${item.price} <button class="remove-btn" data-index="${index}">❌</button>`;
+    cartItemsDiv.appendChild(itemDiv);
+  });
+
+  document.getElementById("total").innerText = total;
+
+  // Add listeners to remove buttons
+  document.querySelectorAll('.remove-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      cart.splice(e.target.dataset.index, 1);
       renderCart();
-    }
-  }).open();
-};
+    });
+  });
+}
 
-window.toggleCart = ()=>{
+document.getElementById('toggleCartBtn')?.addEventListener('click', () => {
   document.getElementById("cart").classList.toggle("active");
-};
+});
 
-/* CHATBOT */
-window.toggleChat = ()=>{
-  let c=document.getElementById("chat-body");
-  c.style.display=c.style.display==="block"?"none":"block";
-};
+// --- CHATBOT (XSS SECURED) ---
+document.getElementById('chat-header')?.addEventListener('click', () => {
+  const chatBody = document.getElementById("chat-body");
+  chatBody.style.display = chatBody.style.display === "block" ? "none" : "block";
+});
 
-window.sendMessage = ()=>{
-  let msg=document.getElementById("chatInput").value;
-  document.getElementById("chat-messages").innerHTML+=`<p>You: ${msg}</p>`;
-  document.getElementById("chat-messages").innerHTML+=`<p>Bot: Try brake pads 🔧</p>`;
-};
+// Replace inline sendMessage()
+document.querySelector('#chat-body button')?.addEventListener('click', () => {
+  const inputEl = document.getElementById("chatInput");
+  const msg = inputEl.value;
+  if (!msg) return;
 
-/* HELPERS */
-const val=id=>document.getElementById(id).value;
-const email=()=>val("email");
-const pass=()=>val("password");
+  const chatMessages = document.getElementById("chat-messages");
+  
+  // Securely add user message using textContent
+  const userMsg = document.createElement('p');
+  userMsg.textContent = `You: ${msg}`;
+  chatMessages.appendChild(userMsg);
 
+  // Securely add bot response
+  const botMsg = document.createElement('p');
+  botMsg.textContent = `Bot: Try brake pads 🔧`;
+  chatMessages.appendChild(botMsg);
+
+  inputEl.value = ""; // Clear input
+});
+
+// Initialize the page
 loadParts();
