@@ -1,143 +1,133 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-let cart = [];
-
-/* AUTH */
-onAuthStateChanged(auth, (user) => {
-  document.getElementById("user").innerText =
-    user ? user.email : "Not logged in";
-});
-
-window.login = () => signInWithEmailAndPassword(auth, email(), pass());
-window.register = () => createUserWithEmailAndPassword(auth, email(), pass());
-window.logout = () => signOut(auth);
-
-/* ADD PART */
-window.addPart = async () => {
-  await addDoc(collection(db, "parts"), {
-    name: val("partName"),
-    price: Number(val("partPrice")),
-    shop: val("shopName"),
-    image: val("partImage")
-  });
-  loadParts();
-};
-
-/* LOAD */
-async function loadParts() {
-  const snap = await getDocs(collection(db, "parts"));
-  let html = "";
-
-  snap.forEach(d => {
-    const p = d.data();
-
-    html += `
-    <div class="card">
-      <img src="${p.image || 'https://via.placeholder.com/150'}">
-      <h3>${p.name}</h3>
-      <p>₹${p.price}</p>
-      <small>${p.shop}</small>
-      <button onclick="addToCart('${p.name}',${p.price})">Add</button>
-    </div>`;
-  });
-
-  document.getElementById("results").innerHTML = html;
+body {
+  margin: 0;
+  font-family: 'Segoe UI';
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
 }
 
-/* CART */
-window.addToCart = (name, price) => {
-  cart.push({name, price});
-  renderCart();
-};
-
-function renderCart(){
-  let total=0, html="";
-  cart.forEach(i=>{
-    total+=i.price;
-    html+=`<p>${i.name} - ₹${i.price}</p>`;
-  });
-  document.getElementById("cartItems").innerHTML=html;
-  document.getElementById("total").innerText=total;
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background: black;
 }
 
-window.toggleCart = () => {
-  document.getElementById("cartDrawer").classList.toggle("active");
-};
-
-window.checkout = () => {
-  alert("Payment Successful ✅");
-  cart=[];
-  renderCart();
-};
-
-/* SEARCH */
-document.getElementById("search").addEventListener("input", async (e)=>{
-  const q = e.target.value.toLowerCase();
-  const snap = await getDocs(collection(db,"parts"));
-  let html="";
-
-  snap.forEach(d=>{
-    const p=d.data();
-    if(p.name.toLowerCase().includes(q)){
-      html+=`<div class="card"><h3>${p.name}</h3></div>`;
-    }
-  });
-
-  document.getElementById("results").innerHTML=html;
-});
-
-/* 🤖 CHATBOT */
-window.toggleChat = () => {
-  const body = document.getElementById("chat-body");
-  body.style.display = body.style.display === "flex" ? "none" : "flex";
-};
-
-window.sendMessage = () => {
-  const input = document.getElementById("chatInput");
-  const msg = input.value.trim();
-  if (!msg) return;
-
-  addMessage("You", msg);
-  input.value = "";
-
-  setTimeout(() => {
-    addMessage("Bot", botReply(msg));
-  }, 500);
-};
-
-function addMessage(sender, text) {
-  const box = document.getElementById("chat-messages");
-  box.innerHTML += `<p><b>${sender}:</b> ${text}</p>`;
-  box.scrollTop = box.scrollHeight;
+.navbar input {
+  padding: 10px;
+  border-radius: 20px;
 }
 
-function botReply(msg) {
-  msg = msg.toLowerCase();
-
-  if (msg.includes("brake")) return "Brake pads available 🔧";
-  if (msg.includes("price")) return "Prices vary ₹200–₹5000 💰";
-  if (msg.includes("cart")) return "Click 🛒 to view cart";
-  if (msg.includes("login")) return "Login from top section";
-  if (msg.includes("buy")) return "Add to cart then checkout";
-
-  return "🤖 Ask about parts, price, or cart!";
+.auth {
+  text-align: center;
+  margin-top: 30px;
 }
 
-/* HELPERS */
-const val = id => document.getElementById(id).value;
-const email = () => val("email");
-const pass = () => val("password");
+.auth-box {
+  background: rgba(255,255,255,0.05);
+  padding: 20px;
+  width: 300px;
+  margin: auto;
+  border-radius: 10px;
+}
 
-loadParts();
+.auth-box input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.auth-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hero {
+  text-align: center;
+  padding: 40px;
+}
+
+#map {
+  height: 400px;
+  width: 90%;
+  margin: auto;
+  border-radius: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  height: 150px;
+}
+
+.cart {
+  position: fixed;
+  right: -300px;
+  top: 0;
+  width: 300px;
+  height: 100%;
+  background: #111;
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.cart.active {
+  right: 0;
+}
+
+.cartBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: green;
+  padding: 15px;
+  border-radius: 50%;
+}
+
+.add {
+  text-align: center;
+  padding: 40px;
+}
+
+.add input {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+}
+
+/* CHATBOT */
+#chatbot {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 280px;
+}
+
+#chat-header {
+  background: #22c55e;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#chat-body {
+  display: none;
+  background: #111;
+  height: 300px;
+}
+
+#chat-messages {
+  height: 220px;
+  overflow-y: auto;
+}
