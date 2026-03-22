@@ -1,12 +1,7 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
+  margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: #0f172a; /* 🔥 FIXED (no gradient blur) */
+  background: linear-gradient(to right, #0f172a, #1e293b);
   color: white;
 }
 
@@ -47,61 +42,65 @@ body {
   cursor: pointer;
 }
 
-/* LOGIN */
+/* AUTH */
 .auth-section {
-  width: 350px;
-  margin: 40px auto;
-  padding: 25px;
+  width: 300px;
+  margin: 30px auto;
+  padding: 20px;
   background: #1e293b;
-  border-radius: 12px;
+  border-radius: 10px;
   text-align: center;
 }
 
 .auth-section input {
-  width: 90%;
+  width: 100%;
   margin: 10px 0;
-  padding: 12px;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 5px;
   border: none;
 }
 
 .auth-section button {
   margin: 5px;
-  padding: 10px 15px;
+  padding: 10px;
   background: #3b82f6;
   border: none;
   color: white;
-  border-radius: 6px;
-  cursor: pointer;
+  border-radius: 5px;
 }
 
 /* HERO */
 .hero {
   text-align: center;
-  padding: 50px 20px;
+  padding: 40px;
+}
+
+/* CENTER */
+.center {
+  text-align: center;
 }
 
 /* MAP */
 #map {
   height: 400px;
   width: 90%;
-  margin: 30px auto;
-  border-radius: 15px;
+  margin: 20px auto;
+  border-radius: 10px;
 }
 
-/* PRODUCTS */
+/* PRODUCTS GRID */
 .grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
-  justify-content: center;
+  padding: 20px;
 }
 
+/* CARD */
 .card {
   background: #1e293b;
   padding: 20px;
-  border-radius: 12px;
-  width: 220px;
+  border-radius: 10px;
   text-align: center;
 }
 
@@ -118,28 +117,18 @@ body {
 section input {
   display: block;
   margin: 10px auto;
-  padding: 12px;
-  width: 300px;
+  padding: 10px;
+  width: 250px;
   border-radius: 5px;
   border: none;
 }
 
 section button {
-  display: block;
-  margin: 15px auto;
-  padding: 12px 25px;
+  margin: 10px;
+  padding: 10px 20px;
   background: #22c55e;
   border: none;
   color: white;
   border-radius: 5px;
   cursor: pointer;
-}
-
-/* CART */
-.green-btn {
-  background: #22c55e;
-}
-
-.center {
-  text-align: center;
 }
