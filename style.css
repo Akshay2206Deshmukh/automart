@@ -1,108 +1,159 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoMart</title>
-
-<link rel="stylesheet" href="style.css">
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-</head>
-
-<body>
-
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="logo">🚗 AutoMart</div>
-
-  <input id="search" type="text" placeholder="Search parts...">
-
-  <div>
-    <span id="user">Not logged in</span>
-    <button onclick="logout()">Logout</button>
-  </div>
-</nav>
-
-<!-- LOGIN -->
-<section class="auth">
-  <h2>Login / Register</h2>
-
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-
-  <div class="btns">
-    <button onclick="login()">Login</button>
-    <button onclick="register()">Register</button>
-  </div>
-</section>
-
-<!-- HERO -->
-<section class="hero">
-  <h1>🚀 Find Perfect Spare Parts</h1>
-</section>
-
-<!-- MAP -->
-<h2 class="title">📍 Nearby Shops</h2>
-<div id="map"></div>
-
-<!-- PRODUCTS -->
-<h2 class="title">Products</h2>
-<div id="results" class="grid"></div>
-
-<!-- CART -->
-<div id="cart" class="cart">
-  <h2>🛒 Cart</h2>
-  <div id="cartItems"></div>
-  <h3>Total ₹<span id="total">0</span></h3>
-  <button onclick="checkout()">Checkout</button>
-</div>
-
-<button class="cartBtn" onclick="toggleCart()">🛒</button>
-
-<!-- ADD PART -->
-<section class="add">
-  <h2>Add Part</h2>
-
-  <input id="partName" placeholder="Part Name">
-  <input id="partPrice" type="number" placeholder="Price">
-  <input id="shopName" placeholder="Shop Name">
-  <input id="partImage" placeholder="Image URL">
-
-  <button onclick="addPart()">Add Part</button>
-</section>
-
-<!-- 🤖 CHATBOT -->
-<div id="chatbot">
-  <div id="chat-header" onclick="toggleChat()">🤖 AutoBot</div>
-
-  <div id="chat-body">
-    <div id="chat-messages"></div>
-
-    <div class="chat-input">
-      <input id="chatInput" placeholder="Ask something...">
-      <button onclick="sendMessage()">Send</button>
-    </div>
-  </div>
-</div>
-
-<!-- MAP SCRIPT -->
-<script>
-function initMap() {
-  const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 11,
-    center: { lat: 19.2183, lng: 72.9781 }
-  });
-
-  new google.maps.Marker({
-    position: { lat: 19.2183, lng: 72.9781 },
-    map
-  });
+body {
+  margin: 0;
+  font-family: 'Segoe UI';
+  background: linear-gradient(to right, #0f172a, #1e293b);
+  color: white;
 }
-</script>
 
-<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo&callback=initMap"></script>
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background: black;
+}
 
-<script type="module" src="script.js"></script>
+.navbar input {
+  padding: 10px;
+  border-radius: 5px;
+}
 
-</body>
-</html>
+/* AUTH */
+.auth {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.auth input {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 250px;
+}
+
+.btns button {
+  margin: 5px;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 40px;
+}
+
+/* MAP */
+#map {
+  height: 400px;
+  width: 90%;
+  margin: auto;
+  border-radius: 10px;
+}
+
+/* PRODUCTS */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 10px;
+  width: 250px;
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+/* BUTTON */
+button {
+  background: #22c55e;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #16a34a;
+}
+
+/* CART */
+.cart {
+  position: fixed;
+  right: -300px;
+  top: 0;
+  width: 300px;
+  height: 100%;
+  background: #111;
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.cart.active {
+  right: 0;
+}
+
+.cartBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px;
+  background: green;
+  border-radius: 50%;
+}
+
+/* ADD FORM */
+.add {
+  text-align: center;
+  padding: 40px;
+}
+
+.add input {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+}
+
+/* CHATBOT */
+#chatbot {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 260px;
+}
+
+#chat-header {
+  background: #22c55e;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+
+#chat-body {
+  display: none;
+  background: #111;
+  height: 300px;
+  padding: 10px;
+}
+
+#chat-messages {
+  height: 220px;
+  overflow-y: auto;
+}
+
+.chat-input {
+  display: flex;
+  gap: 5px;
+}
+
+.chat-input input {
+  flex: 1;
+}
