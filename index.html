@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AutoMart</title>
 
-<!-- CSS -->
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -15,67 +13,78 @@
 <!-- 🔥 NAVBAR -->
 <nav class="navbar">
   <div class="nav-container">
-
     <div class="logo">🚗 AutoMart</div>
 
     <div class="search-container">
-      <input id="search" type="text" class="search-bar" placeholder="Search parts...">
-      <button class="search-btn" onclick="searchParts()">🔍 Search</button>
+      <input id="search" type="text" placeholder="Search parts...">
+      <button onclick="searchParts()">🔍 Search</button>
     </div>
 
-    <div class="user-section">
-      <span id="user" class="user-email">Not logged in</span>
-      <button class="auth-btn" onclick="logout()">Logout</button>
+    <div>
+      <span id="user">Not logged in</span>
+      <button onclick="logout()">Logout</button>
     </div>
-
   </div>
 </nav>
 
-<!-- 🔥 HERO -->
+<!-- 🔐 LOGIN -->
+<section class="auth-section">
+  <h2>Login / Register</h2>
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <div>
+    <button onclick="login()">Login</button>
+    <button onclick="register()">Register</button>
+  </div>
+</section>
+
+<!-- HERO -->
 <section class="hero">
   <h1>Find Perfect Spare Parts</h1>
-  <p>Discover premium quality car parts from trusted sellers.</p>
+  <p>Premium quality parts from trusted sellers</p>
 </section>
 
-<!-- 🔥 PRODUCTS -->
-<section class="products-section">
-  <h2 class="section-title">Available Parts</h2>
-
-  <!-- Dynamic Data -->
-  <div id="results" class="products-grid"></div>
-
-  <!-- Empty State -->
-  <p id="noData" style="text-align:center; display:none;">No parts available</p>
+<!-- MAP -->
+<section>
+  <h2 style="text-align:center;">Nearby Shops</h2>
+  <div id="map"></div>
 </section>
 
-<!-- 🔥 ADD PART -->
-<section class="add-part-section">
-  <h2>Add New Part</h2>
-
-  <div class="form-group">
-    <label>Part Name</label>
-    <input id="partName" type="text" placeholder="Brake Pads">
-  </div>
-
-  <div class="form-group">
-    <label>Price</label>
-    <input id="partPrice" type="number" placeholder="₹">
-  </div>
-
-  <div class="form-group">
-    <label>Shop Name</label>
-    <input id="shopName" type="text" placeholder="Shop Name">
-  </div>
-
-  <button class="add-part-btn" onclick="addPart()">🚀 Add Part</button>
+<!-- PRODUCTS -->
+<section>
+  <h2>Available Parts</h2>
+  <div id="results" class="grid"></div>
 </section>
 
-<!-- 🔥 FOOTER -->
-<footer style="text-align:center; padding:20px; opacity:0.7;">
-  © 2026 AutoMart | Built by Akshay 🚀
-</footer>
+<!-- ADD PART -->
+<section>
+  <h2>Add Part</h2>
+  <input id="partName" placeholder="Part Name">
+  <input id="partPrice" type="number" placeholder="Price">
+  <input id="shopName" placeholder="Shop Name">
+  <button onclick="addPart()">Add Part</button>
+</section>
 
-<!-- 🔥 SCRIPT -->
+<!-- MAP SCRIPT -->
+<script>
+function initMap() {
+  const loc = { lat: 19.2183, lng: 72.9781 };
+
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 12,
+    center: loc,
+  });
+
+  new google.maps.Marker({
+    position: loc,
+    map: map
+  });
+}
+</script>
+
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo&callback=initMap"></script>
+
+<!-- FIREBASE SCRIPT -->
 <script type="module" src="script.js"></script>
 
 </body>
