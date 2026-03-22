@@ -2,6 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+console.log("Script Loaded ✅");
+
 const firebaseConfig = {
   apiKey: "AIzaSyBhT0ag7_G567gV2uYvqKbXUARwWzDsDZg",
   authDomain: "automart-6d640.firebaseapp.com",
@@ -20,7 +22,7 @@ onAuthStateChanged(auth, (user) => {
     user ? user.email : "Not logged in";
 });
 
-/* AUTH */
+/* LOGIN */
 window.login = async () => {
   try {
     await signInWithEmailAndPassword(auth, email(), pass());
@@ -30,6 +32,7 @@ window.login = async () => {
   }
 };
 
+/* REGISTER */
 window.register = async () => {
   try {
     await createUserWithEmailAndPassword(auth, email(), pass());
@@ -39,6 +42,7 @@ window.register = async () => {
   }
 };
 
+/* LOGOUT */
 window.logout = () => signOut(auth);
 
 /* ADD PART */
@@ -58,21 +62,22 @@ window.addPart = async () => {
   }
 };
 
-/* LOAD */
+/* LOAD PARTS */
 async function loadParts() {
   const snap = await getDocs(collection(db, "parts"));
   let html = "";
 
-  snap.forEach(d => {
-    const p = d.data();
+  snap.forEach(doc => {
+    const p = doc.data();
+
     html += `
-    <div class="card">
-      <img src="${p.image || 'https://via.placeholder.com/150'}">
-      <h3>${p.name}</h3>
-      <p>₹${p.price}</p>
-      <div>⭐⭐⭐⭐☆</div>
-      <button onclick="addToCart('${p.name}',${p.price})">Add</button>
-    </div>`;
+      <div class="card">
+        <img src="${p.image || 'https://via.placeholder.com/150'}">
+        <h3>${p.name}</h3>
+        <p>₹${p.price}</p>
+        <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
+      </div>
+    `;
   });
 
   document.getElementById("results").innerHTML = html;
@@ -80,37 +85,40 @@ async function loadParts() {
 
 /* CART */
 window.addToCart = (name, price) => {
-  cart.push({name, price});
+  cart.push({ name, price });
   renderCart();
 };
 
-function renderCart(){
-  let total=0, html="";
-  cart.forEach((item,i)=>{
-    total+=item.price;
-    html+=`${item.name} ₹${item.price} 
-    <button onclick="removeItem(${i})">❌</button><br>`;
+function renderCart() {
+  let total = 0;
+  let html = "";
+
+  cart.forEach((item, i) => {
+    total += item.price;
+    html += `${item.name} ₹${item.price} <button onclick="removeItem(${i})">❌</button><br>`;
   });
-  document.getElementById("cartItems").innerHTML=html;
-  document.getElementById("total").innerText=total;
+
+  document.getElementById("cartItems").innerHTML = html;
+  document.getElementById("total").innerText = total;
 }
 
-window.removeItem = (i)=>{
-  cart.splice(i,1);
+window.removeItem = (i) => {
+  cart.splice(i, 1);
   renderCart();
 };
 
+/* CHECKOUT */
 window.checkout = () => {
-  let total = cart.reduce((sum,i)=>sum+i.price,0);
+  let total = cart.reduce((sum, i) => sum + i.price, 0);
 
   const rzp = new Razorpay({
-    key:"rzp_test_xxxxx",
-    amount: total*100,
-    currency:"INR",
-    name:"AutoMart",
-    handler: ()=>{
+    key: "rzp_test_xxxxx",
+    amount: total * 100,
+    currency: "INR",
+    name: "AutoMart",
+    handler: () => {
       alert("Payment Successful 🎉");
-      cart=[];
+      cart = [];
       renderCart();
     }
   });
@@ -118,51 +126,15 @@ window.checkout = () => {
   rzp.open();
 };
 
+/* CART TOGGLE */
 window.toggleCart = () => {
-  document.getElementById("cartDrawer").classList.toggle("active");
+  document.getElementById("cart").classList.toggle("active");
 };
 
-/* SEARCH */
-document.getElementById("search").addEventListener("input", async (e)=>{
-  const q=e.target.value.toLowerCase();
-  const snap=await getDocs(collection(db,"parts"));
-  let html="";
-  snap.forEach(d=>{
-    const p=d.data();
-    if(p.name.toLowerCase().includes(q)){
-      html+=`<div class="card"><h3>${p.name}</h3></div>`;
-    }
-  });
-  document.getElementById("results").innerHTML=html;
-});
+/* HELPERS */
+const val = (id) => document.getElementById(id).value;
+const email = () => val("email");
+const pass = () => val("password");
 
-/* CHATBOT */
-window.toggleChat = ()=>{
-  const b=document.getElementById("chat-body");
-  b.style.display=b.style.display==="block"?"none":"block";
-};
-
-window.sendMessage = ()=>{
-  const input=document.getElementById("chatInput");
-  const msg=input.value;
-  addMsg("You",msg);
-  input.value="";
-  setTimeout(()=>addMsg("Bot",reply(msg)),500);
-};
-
-function addMsg(s,t){
-  document.getElementById("chat-messages").innerHTML+=`<p><b>${s}:</b> ${t}</p>`;
-}
-
-function reply(msg){
-  msg=msg.toLowerCase();
-  if(msg.includes("price")) return "Prices range ₹200–₹5000";
-  if(msg.includes("best")) return "Brake pads & filters are trending";
-  return "Ask about parts, price, or cart 🤖";
-}
-
-const val=id=>document.getElementById(id).value;
-const email=()=>val("email");
-const pass=()=>val("password");
-
+/* INIT */
 loadParts();
