@@ -32,7 +32,6 @@ window.addPart = async () => {
     shop: val("shopName"),
     image: val("partImage")
   });
-
   loadParts();
 };
 
@@ -98,6 +97,43 @@ document.getElementById("search").addEventListener("input", async (e)=>{
 
   document.getElementById("results").innerHTML=html;
 });
+
+/* 🤖 CHATBOT */
+window.toggleChat = () => {
+  const body = document.getElementById("chat-body");
+  body.style.display = body.style.display === "flex" ? "none" : "flex";
+};
+
+window.sendMessage = () => {
+  const input = document.getElementById("chatInput");
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  addMessage("You", msg);
+  input.value = "";
+
+  setTimeout(() => {
+    addMessage("Bot", botReply(msg));
+  }, 500);
+};
+
+function addMessage(sender, text) {
+  const box = document.getElementById("chat-messages");
+  box.innerHTML += `<p><b>${sender}:</b> ${text}</p>`;
+  box.scrollTop = box.scrollHeight;
+}
+
+function botReply(msg) {
+  msg = msg.toLowerCase();
+
+  if (msg.includes("brake")) return "Brake pads available 🔧";
+  if (msg.includes("price")) return "Prices vary ₹200–₹5000 💰";
+  if (msg.includes("cart")) return "Click 🛒 to view cart";
+  if (msg.includes("login")) return "Login from top section";
+  if (msg.includes("buy")) return "Add to cart then checkout";
+
+  return "🤖 Ask about parts, price, or cart!";
+}
 
 /* HELPERS */
 const val = id => document.getElementById(id).value;
