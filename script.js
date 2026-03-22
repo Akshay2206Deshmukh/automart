@@ -45,21 +45,33 @@ window.login = async () => {
 
 window.logout = () => signOut(auth);
 
-// ADD PART
+// ADD PART WITH LOCATION
 window.addPart = async () => {
   if (!auth.currentUser) return alert("Login first");
 
-  await addDoc(collection(db, "parts"), {
-    name: document.getElementById("partName").value,
-    price: Number(document.getElementById("partPrice").value),
-    shop: document.getElementById("shopName").value
-  });
+  const name = document.getElementById("partName").value;
+  const price = Number(document.getElementById("partPrice").value);
+  const shop = document.getElementById("shopName").value;
 
-  alert("Added");
-  loadParts();
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+
+    await addDoc(collection(db, "parts"), {
+      name,
+      price,
+      shop,
+      lat,
+      lng
+    });
+
+    alert("Part added 📍");
+    loadParts();
+    loadMapParts();
+  });
 };
 
-// LOAD
+// LOAD PRODUCTS
 async function loadParts() {
   const snap = await getDocs(collection(db, "parts"));
   let html = "";
@@ -94,7 +106,7 @@ function updateCart() {
   cart.forEach((item, i) => {
     total += item.price;
     html += `<p>${item.name} - ₹${item.price}
-      <button onclick="removeItem(${i})">❌</button></p>`;
+    <button onclick="removeItem(${i})">❌</button></p>`;
   });
 
   document.getElementById("cart").innerHTML = html;
@@ -126,6 +138,25 @@ window.searchParts = async () => {
 
   document.getElementById("results").innerHTML = html;
 };
+
+// MAP MARKERS
+async function loadMapParts() {
+  const snap = await getDocs(collection(db, "parts"));
+
+  snap.forEach(doc => {
+    const p = doc.data();
+
+    if (p.lat && p.lng) {
+      new google.maps.Marker({
+        position: { lat: p.lat, lng: p.lng },
+        map: window.map,
+        title: p.name
+      });
+    }
+  });
+}
+
+window.loadMapParts = loadMapParts;
 
 // HELPERS
 const email = () => document.getElementById("email").value;
