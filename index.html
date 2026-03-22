@@ -1,99 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoMart</title>
-
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="nav-container">
-    <div class="logo">🚗 AutoMart</div>
-
-    <div class="search-container">
-      <input id="search" placeholder="Search parts...">
-      <button onclick="searchParts()">🔍</button>
-    </div>
-
-    <div>
-      <span id="user">Not logged in</span>
-      <button onclick="logout()">Logout</button>
-    </div>
-  </div>
-</nav>
-
-<!-- LOGIN -->
-<section class="auth-section">
-  <h2>Login / Register</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
-</section>
-
-<!-- HERO -->
-<section class="hero">
-  <h1>Find Perfect Spare Parts</h1>
-</section>
-
-<!-- MAP -->
-<section>
-  <h2 class="center">Nearby Shops</h2>
-  <div id="map"></div>
-</section>
-
-<!-- PRODUCTS -->
-<section>
-  <h2 class="center">Products</h2>
-  <div id="results" class="grid"></div>
-</section>
-
-<!-- CART -->
-<section>
-  <h2 class="center">Cart</h2>
-  <div id="cartItems" class="grid"></div>
-  <h3 id="total" class="center">Total: ₹0</h3>
-  <button onclick="checkout()" class="checkout-btn">Checkout</button>
-</section>
-
-<!-- CHECKOUT BOX -->
-<div id="checkoutBox" class="checkout-box">
-  <h2>Order Summary</h2>
-  <div id="orderDetails"></div>
-  <h3 id="finalTotal"></h3>
-  <button onclick="confirmOrder()">Pay</button>
-  <button onclick="closeCheckout()">Cancel</button>
-</div>
-
-<!-- ADD PART -->
-<section>
-  <h2 class="center">Add Part</h2>
-  <input id="partName" placeholder="Part Name">
-  <input id="partPrice" type="number" placeholder="Price">
-  <input id="shopName" placeholder="Shop Name">
-  <input id="partImage" type="file">
-  <button onclick="addPart()">Add Part</button>
-</section>
-
-<!-- MAP -->
-<script>
-function initMap() {
-  const loc = { lat: 19.2183, lng: 72.9781 };
-  const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 12,
-    center: loc
-  });
-  new google.maps.Marker({ position: loc, map });
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #0f172a, #1e293b);
+  color: white;
 }
-</script>
 
-<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo&callback=initMap"></script>
+/* NAVBAR */
+.navbar {
+  background: black;
+  padding: 12px 20px;
+}
 
-<script type="module" src="script.js"></script>
-</body>
-</html>
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.search-container {
+  display: flex;
+  gap: 10px;
+}
+
+.search-container input {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+}
+
+.search-container button {
+  background: #3b82f6;
+  border: none;
+  padding: 10px;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 🔥 LOGIN CENTER FIX */
+.auth-section {
+  width: 350px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #1e293b;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(0,0,0,0.5);
+}
+
+.auth-section input {
+  width: 90%;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+}
+
+.auth-section button {
+  margin: 5px;
+  padding: 10px 15px;
+  background: #3b82f6;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+/* CENTER TEXT */
+.center {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* MAP */
+#map {
+  height: 400px;
+  width: 90%;
+  margin: 30px auto;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+/* PRODUCTS */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+
+/* CARD */
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  width: 220px;
+  text-align: center;
+  transition: 0.3s;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.card button {
+  margin-top: 10px;
+  padding: 10px;
+  background: orange;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* FORM */
+section input {
+  display: block;
+  margin: 10px auto;
+  padding: 12px;
+  width: 300px;
+  border-radius: 5px;
+  border: none;
+}
+
+section button {
+  display: block;
+  margin: 15px auto;
+  padding: 12px 25px;
+  background: #22c55e;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
