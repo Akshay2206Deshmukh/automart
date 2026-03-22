@@ -1,13 +1,15 @@
+/* 🔥 GLOBAL */
 body {
-  font-family: Arial;
   margin: 0;
-  background: #0f172a;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #0f172a, #1e293b);
   color: white;
 }
 
+/* 🔥 NAVBAR */
 .navbar {
   background: black;
-  padding: 10px;
+  padding: 12px 20px;
 }
 
 .nav-container {
@@ -16,47 +18,112 @@ body {
   align-items: center;
 }
 
-input {
-  padding: 10px;
-  margin: 5px;
-  width: 250px;
+.logo {
+  font-size: 22px;
+  font-weight: bold;
 }
 
-button {
+.search-container {
+  display: flex;
+  gap: 10px;
+}
+
+.search-container input {
   padding: 10px;
+  border-radius: 5px;
+  border: none;
+}
+
+.search-container button {
   background: #3b82f6;
   border: none;
+  padding: 10px;
   color: white;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.hero {
+/* 🔐 AUTH */
+.auth-section {
+  max-width: 400px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #1e293b;
+  border-radius: 10px;
   text-align: center;
-  padding: 40px;
 }
 
+.auth-section input {
+  width: 90%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+}
+
+.auth-section button {
+  margin: 5px;
+  padding: 10px 15px;
+  background: #3b82f6;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+/* MAP */
 #map {
   height: 400px;
   width: 90%;
-  margin: auto;
+  margin: 20px auto;
+  border-radius: 10px;
 }
 
+/* PRODUCTS */
 .grid {
   display: flex;
-  gap: 15px;
   flex-wrap: wrap;
+  gap: 20px;
   padding: 20px;
+  justify-content: center;
 }
 
 .card {
   background: #1e293b;
   padding: 20px;
-  border-radius: 10px;
-  width: 150px;
+  border-radius: 12px;
+  width: 200px;
   text-align: center;
+  transition: 0.3s;
 }
 
-.auth-section {
-  text-align: center;
-  margin: 20px;
+.card:hover {
+  transform: scale(1.05);
+}
+
+/* ADD PART */
+section input {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 300px;
+  border-radius: 5px;
+  border: none;
+}
+
+section button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px 20px;
+  background: #22c55e;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
 }
