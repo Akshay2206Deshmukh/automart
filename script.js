@@ -1,6 +1,3 @@
-// =============================
-// 🔥 FIREBASE IMPORTS
-// =============================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
@@ -17,179 +14,102 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// =============================
-// 🔥 FIREBASE CONFIG
-// =============================
 const firebaseConfig = {
   apiKey: "AIzaSyBhT0ag7_G567gV2uYvqKbXUARwWzDsDZg",
   authDomain: "automart-6d640.firebaseapp.com",
   projectId: "automart-6d640",
-  storageBucket: "automart-6d640.appspot.com",
-  messagingSenderId: "397090205144",
-  appId: "1:397090205144:web:e01bbffd00a11a5d0696ad"
 };
 
-// =============================
-// 🚀 INIT
-// =============================
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// =============================
-// 👤 USER STATE
-// =============================
+// USER STATE
 onAuthStateChanged(auth, (user) => {
-  const userDiv = document.getElementById("user");
-
-  if (user) {
-    userDiv.innerText = "👤 " + user.email;
-  } else {
-    userDiv.innerText = "Not logged in";
-  }
+  document.getElementById("user").innerText =
+    user ? "👤 " + user.email : "Not logged in";
 });
 
-// =============================
-// 🔐 AUTH FUNCTIONS
-// =============================
-
 // REGISTER
-window.register = async function () {
-  const email = document.getElementById("email")?.value;
-  const password = document.getElementById("password")?.value;
-
-  if (!email || !password) {
-    alert("Enter email & password");
-    return;
-  }
-
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    alert("✅ Registered!");
-  } catch (err) {
-    alert("❌ " + err.message);
-  }
+window.register = async () => {
+  const email = emailInput();
+  const pass = passInput();
+  await createUserWithEmailAndPassword(auth, email, pass);
+  alert("Registered");
 };
 
 // LOGIN
-window.login = async function () {
-  const email = document.getElementById("email")?.value;
-  const password = document.getElementById("password")?.value;
-
-  if (!email || !password) {
-    alert("Enter email & password");
-    return;
-  }
-
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    alert("✅ Logged in!");
-  } catch (err) {
-    alert("❌ " + err.message);
-  }
+window.login = async () => {
+  const email = emailInput();
+  const pass = passInput();
+  await signInWithEmailAndPassword(auth, email, pass);
+  alert("Logged in");
 };
 
 // LOGOUT
-window.logout = function () {
-  signOut(auth);
-};
+window.logout = () => signOut(auth);
 
-// =============================
-// ➕ ADD PART
-// =============================
-window.addPart = async function () {
+// ADD PART
+window.addPart = async () => {
   const user = auth.currentUser;
+  if (!user) return alert("Login first");
 
-  if (!user) {
-    alert("❌ Please login first!");
-    return;
-  }
+  await addDoc(collection(db, "parts"), {
+    name: document.getElementById("partName").value,
+    price: Number(document.getElementById("partPrice").value),
+    shop: document.getElementById("shopName").value
+  });
 
-  const name = document.getElementById("partName").value.trim();
-  const price = document.getElementById("partPrice").value;
-  const shop = document.getElementById("shopName").value.trim();
-
-  if (!name || !price || !shop) {
-    alert("❌ Fill all fields!");
-    return;
-  }
-
-  try {
-    await addDoc(collection(db, "parts"), {
-      name,
-      price: Number(price),
-      shop,
-      owner: user.email
-    });
-
-    alert("✅ Part added!");
-
-    // Clear inputs
-    document.getElementById("partName").value = "";
-    document.getElementById("partPrice").value = "";
-    document.getElementById("shopName").value = "";
-
-    // 🔥 Reload data instantly
-    loadParts();
-
-  } catch (err) {
-    alert("❌ " + err.message);
-  }
+  alert("Added");
+  loadParts();
 };
 
-// =============================
-// 🔍 SEARCH PARTS
-// =============================
-window.searchParts = async function () {
-  const query = document.getElementById("search").value.toLowerCase();
-  const snapshot = await getDocs(collection(db, "parts"));
+// SEARCH
+window.searchParts = async () => {
+  const q = document.getElementById("search").value.toLowerCase();
+  const snap = await getDocs(collection(db, "parts"));
 
   let html = "";
 
-  snapshot.forEach((doc) => {
+  snap.forEach(doc => {
     const p = doc.data();
-
-    if (p.name.toLowerCase().includes(query)) {
-      html += createCard(p);
+    if (p.name.toLowerCase().includes(q)) {
+      html += card(p);
     }
   });
 
-  document.getElementById("results").innerHTML =
-    html || "<p style='text-align:center'>No parts found</p>";
+  document.getElementById("results").innerHTML = html;
 };
 
-// =============================
-// 📦 LOAD ALL PARTS
-// =============================
+// LOAD
 async function loadParts() {
-  const snapshot = await getDocs(collection(db, "parts"));
-
+  const snap = await getDocs(collection(db, "parts"));
   let html = "";
 
-  snapshot.forEach((doc) => {
-    const p = doc.data();
-    html += createCard(p);
-  });
+  snap.forEach(doc => html += card(doc.data()));
 
-  document.getElementById("results").innerHTML =
-    html || "<p style='text-align:center'>No parts available</p>";
+  document.getElementById("results").innerHTML = html;
 }
 
-// =============================
-// 🎨 CARD TEMPLATE
-// =============================
-function createCard(p) {
+// CARD
+function card(p) {
   return `
-    <div class="product-card">
-      <div class="product-image">⚙️</div>
-      <div class="product-name">${p.name}</div>
-      <div class="product-price">₹${p.price}</div>
-      <div class="product-shop">${p.shop}</div>
+    <div class="card">
+      <h3>${p.name}</h3>
+      <p>₹${p.price}</p>
+      <small>${p.shop}</small>
     </div>
   `;
 }
 
-// =============================
-// 🚀 AUTO LOAD ON START
-// =============================
+// HELPERS
+function emailInput() {
+  return document.getElementById("email").value;
+}
+
+function passInput() {
+  return document.getElementById("password").value;
+}
+
+// AUTO LOAD
 loadParts();
