@@ -32,7 +32,6 @@
   <h2>Login / Register</h2>
   <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
-
   <button onclick="login()">Login</button>
   <button onclick="register()">Register</button>
 </section>
@@ -40,6 +39,12 @@
 <!-- HERO -->
 <section class="hero">
   <h1>Find Perfect Spare Parts</h1>
+</section>
+
+<!-- MAP -->
+<section>
+  <h2 class="center">Nearby Shops</h2>
+  <div id="map"></div>
 </section>
 
 <!-- PRODUCTS -->
@@ -53,21 +58,37 @@
   <h2>🛒 Your Cart</h2>
   <div id="cart"></div>
   <h3>Total: ₹<span id="total">0</span></h3>
-
-  <button onclick="checkout()" class="green-btn">💳 Proceed to Checkout</button>
+  <button onclick="checkout()" class="green-btn">Proceed to Checkout</button>
 </section>
 
 <!-- ADD PART -->
 <section>
   <h2 class="center">Add New Part</h2>
-
   <input id="partName" placeholder="Part Name">
   <input id="partPrice" type="number" placeholder="Price">
   <input id="shopName" placeholder="Shop Name">
-  <input id="partImage" type="file">
-
   <button onclick="addPart()">Add Part</button>
 </section>
+
+<!-- MAP SCRIPT -->
+<script>
+function initMap() {
+  const loc = { lat: 19.2183, lng: 72.9781 };
+
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 12,
+    center: loc,
+  });
+
+  new google.maps.Marker({
+    position: loc,
+    map: map
+  });
+}
+</script>
+
+<!-- 🔥 PUT YOUR GOOGLE MAP API -->
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo&callback=initMap"></script>
 
 <script type="module" src="script.js"></script>
 
