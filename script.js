@@ -2,8 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-console.log("Script Loaded ✅");
-
 const firebaseConfig = {
   apiKey: "AIzaSyBhT0ag7_G567gV2uYvqKbXUARwWzDsDZg",
   authDomain: "automart-6d640.firebaseapp.com",
@@ -16,7 +14,7 @@ const auth = getAuth(app);
 
 let cart = [];
 
-/* USER STATE */
+/* USER */
 onAuthStateChanged(auth, (user) => {
   document.getElementById("user").innerText =
     user ? user.email : "Not logged in";
@@ -26,7 +24,7 @@ onAuthStateChanged(auth, (user) => {
 window.login = async () => {
   try {
     await signInWithEmailAndPassword(auth, email(), pass());
-    alert("Login Successful ✅");
+    alert("Login Successful");
   } catch (e) {
     alert(e.message);
   }
@@ -36,7 +34,7 @@ window.login = async () => {
 window.register = async () => {
   try {
     await createUserWithEmailAndPassword(auth, email(), pass());
-    alert("Registered ✅");
+    alert("Registered");
   } catch (e) {
     alert(e.message);
   }
@@ -47,22 +45,23 @@ window.logout = () => signOut(auth);
 
 /* ADD PART */
 window.addPart = async () => {
-  try {
-    await addDoc(collection(db, "parts"), {
-      name: val("partName"),
-      price: Number(val("partPrice")),
-      shop: val("shopName"),
-      image: val("partImage")
-    });
-
-    alert("Part Added ✅");
-    loadParts();
-  } catch (e) {
-    alert(e.message);
+  if (!val("partName") || !val("partPrice") || !val("shopName")) {
+    alert("Fill all fields");
+    return;
   }
+
+  await addDoc(collection(db, "parts"), {
+    name: val("partName"),
+    price: Number(val("partPrice")),
+    shop: val("shopName"),
+    image: val("partImage")
+  });
+
+  alert("Added");
+  loadParts();
 };
 
-/* LOAD PARTS */
+/* LOAD */
 async function loadParts() {
   const snap = await getDocs(collection(db, "parts"));
   let html = "";
@@ -71,13 +70,12 @@ async function loadParts() {
     const p = doc.data();
 
     html += `
-      <div class="card">
-        <img src="${p.image || 'https://via.placeholder.com/150'}">
-        <h3>${p.name}</h3>
-        <p>₹${p.price}</p>
-        <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
-      </div>
-    `;
+    <div class="card">
+      <img src="${p.image || 'https://via.placeholder.com/150'}">
+      <h3>${p.name}</h3>
+      <p>₹${p.price}</p>
+      <button onclick="addToCart('${p.name}', ${p.price})">Add</button>
+    </div>`;
   });
 
   document.getElementById("results").innerHTML = html;
@@ -95,7 +93,8 @@ function renderCart() {
 
   cart.forEach((item, i) => {
     total += item.price;
-    html += `${item.name} ₹${item.price} <button onclick="removeItem(${i})">❌</button><br>`;
+    html += `${item.name} ₹${item.price}
+    <button onclick="removeItem(${i})">❌</button><br>`;
   });
 
   document.getElementById("cartItems").innerHTML = html;
@@ -117,7 +116,7 @@ window.checkout = () => {
     currency: "INR",
     name: "AutoMart",
     handler: () => {
-      alert("Payment Successful 🎉");
+      alert("Payment Successful");
       cart = [];
       renderCart();
     }
@@ -131,8 +130,39 @@ window.toggleCart = () => {
   document.getElementById("cart").classList.toggle("active");
 };
 
+/* CHATBOT */
+window.toggleChat = () => {
+  const c = document.getElementById("chat-body");
+  c.style.display = c.style.display === "block" ? "none" : "block";
+};
+
+window.sendMessage = () => {
+  const input = document.getElementById("chatInput");
+  const msg = input.value;
+
+  if (!msg) return;
+
+  addMsg("You", msg);
+  input.value = "";
+
+  setTimeout(() => addMsg("Bot", reply(msg)), 500);
+};
+
+function addMsg(s, t) {
+  document.getElementById("chat-messages").innerHTML +=
+    `<p><b>${s}:</b> ${t}</p>`;
+}
+
+function reply(msg) {
+  msg = msg.toLowerCase();
+
+  if (msg.includes("price")) return "Prices ₹200–₹5000";
+  if (msg.includes("best")) return "Brake pads & oil best";
+  return "Ask about parts, price, cart 🤖";
+}
+
 /* HELPERS */
-const val = (id) => document.getElementById(id).value;
+const val = id => document.getElementById(id).value;
 const email = () => val("email");
 const pass = () => val("password");
 
