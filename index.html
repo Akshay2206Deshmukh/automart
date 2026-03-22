@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoMart</title>
+<title>AutoMart Pro</title>
 
 <link rel="stylesheet" href="style.css">
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -13,24 +13,18 @@
 
 <!-- NAVBAR -->
 <nav class="navbar">
-  <div class="logo">🚗 AutoMart</div>
-
-  <input id="search" type="text" placeholder="Search parts...">
-
-  <div>
-    <span id="user">Not logged in</span>
-    <button onclick="logout()">Logout</button>
-  </div>
+  <h2>🚗 AutoMart</h2>
+  <input id="search" placeholder="Search parts...">
+  <span id="user">Not logged in</span>
+  <button onclick="logout()">Logout</button>
 </nav>
 
-<!-- LOGIN -->
+<!-- AUTH -->
 <section class="auth">
   <h2>Login / Register</h2>
-
-  <input id="email" type="email" placeholder="Email">
+  <input id="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
-
-  <div class="btns">
+  <div class="auth-btns">
     <button onclick="login()">Login</button>
     <button onclick="register()">Register</button>
   </div>
@@ -38,20 +32,18 @@
 
 <!-- HERO -->
 <section class="hero">
-  <h1>🚀 Find Perfect Spare Parts</h1>
+  <h1>Find Spare Parts Easily 🚀</h1>
 </section>
 
-<!-- MAP -->
-<h2 class="title">📍 Nearby Shops</h2>
-<div id="map"></div>
-
 <!-- PRODUCTS -->
-<h2 class="title">Products</h2>
-<div id="results" class="grid"></div>
+<section>
+  <h2 class="center">Products</h2>
+  <div id="results" class="grid"></div>
+</section>
 
 <!-- CART -->
 <div id="cart" class="cart">
-  <h2>🛒 Cart</h2>
+  <h2>Cart</h2>
   <div id="cartItems"></div>
   <h3>Total ₹<span id="total">0</span></h3>
   <button onclick="checkout()">Checkout</button>
@@ -62,45 +54,22 @@
 <!-- ADD PART -->
 <section class="add">
   <h2>Add Part</h2>
-
   <input id="partName" placeholder="Part Name">
-  <input id="partPrice" type="number" placeholder="Price">
+  <input id="partPrice" placeholder="Price">
   <input id="shopName" placeholder="Shop Name">
   <input id="partImage" placeholder="Image URL">
-
   <button onclick="addPart()">Add Part</button>
 </section>
 
-<!-- 🤖 CHATBOT -->
+<!-- CHATBOT -->
 <div id="chatbot">
-  <div id="chat-header" onclick="toggleChat()">🤖 AutoBot</div>
-
+  <div id="chat-header" onclick="toggleChat()">🤖 AI</div>
   <div id="chat-body">
     <div id="chat-messages"></div>
-
-    <div class="chat-input">
-      <input id="chatInput" placeholder="Ask something...">
-      <button onclick="sendMessage()">Send</button>
-    </div>
+    <input id="chatInput">
+    <button onclick="sendMessage()">Send</button>
   </div>
 </div>
-
-<!-- MAP SCRIPT -->
-<script>
-function initMap() {
-  const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 11,
-    center: { lat: 19.2183, lng: 72.9781 }
-  });
-
-  new google.maps.Marker({
-    position: { lat: 19.2183, lng: 72.9781 },
-    map
-  });
-}
-</script>
-
-<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo&callback=initMap"></script>
 
 <script type="module" src="script.js"></script>
 
