@@ -1,103 +1,108 @@
-body {
-  margin: 0;
-  font-family: 'Segoe UI';
-  background: linear-gradient(to right, #0f172a, #1e293b);
-  color: white;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoMart</title>
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  background: black;
-}
+<link rel="stylesheet" href="style.css">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
 
-.navbar input {
-  padding: 10px;
-  border-radius: 5px;
-}
+<body>
 
-.auth {
-  text-align: center;
-  margin-top: 20px;
-}
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">🚗 AutoMart</div>
 
-.auth input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-  width: 250px;
-}
+  <input id="search" type="text" placeholder="Search parts...">
 
-.btns button {
-  margin: 5px;
-  padding: 10px;
-}
+  <div>
+    <span id="user">Not logged in</span>
+    <button onclick="logout()">Logout</button>
+  </div>
+</nav>
 
-.hero {
-  text-align: center;
-  padding: 40px;
-}
+<!-- LOGIN -->
+<section class="auth">
+  <h2>Login / Register</h2>
 
-#map {
-  height: 400px;
-  width: 90%;
-  margin: auto;
-  border-radius: 10px;
-}
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
 
-.grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
-}
+  <div class="btns">
+    <button onclick="login()">Login</button>
+    <button onclick="register()">Register</button>
+  </div>
+</section>
 
-.card {
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 10px;
-  width: 200px;
-  text-align: center;
-}
+<!-- HERO -->
+<section class="hero">
+  <h1>🚀 Find Perfect Spare Parts</h1>
+</section>
 
-.card img {
-  width: 100%;
-  height: 120px;
-}
+<!-- MAP -->
+<h2 class="title">📍 Nearby Shops</h2>
+<div id="map"></div>
 
-.cart {
-  position: fixed;
-  right: -300px;
-  top: 0;
-  width: 300px;
-  height: 100%;
-  background: #111;
-  padding: 20px;
-  transition: 0.3s;
-}
+<!-- PRODUCTS -->
+<h2 class="title">Products</h2>
+<div id="results" class="grid"></div>
 
-.cart.active {
-  right: 0;
-}
+<!-- CART -->
+<div id="cart" class="cart">
+  <h2>🛒 Cart</h2>
+  <div id="cartItems"></div>
+  <h3>Total ₹<span id="total">0</span></h3>
+  <button onclick="checkout()">Checkout</button>
+</div>
 
-.cartBtn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 15px;
-  background: green;
-  border-radius: 50%;
-}
+<button class="cartBtn" onclick="toggleCart()">🛒</button>
 
-.add {
-  text-align: center;
-  padding: 40px;
-}
+<!-- ADD PART -->
+<section class="add">
+  <h2>Add Part</h2>
 
-.add input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
+  <input id="partName" placeholder="Part Name">
+  <input id="partPrice" type="number" placeholder="Price">
+  <input id="shopName" placeholder="Shop Name">
+  <input id="partImage" placeholder="Image URL">
+
+  <button onclick="addPart()">Add Part</button>
+</section>
+
+<!-- 🤖 CHATBOT -->
+<div id="chatbot">
+  <div id="chat-header" onclick="toggleChat()">🤖 AutoBot</div>
+
+  <div id="chat-body">
+    <div id="chat-messages"></div>
+
+    <div class="chat-input">
+      <input id="chatInput" placeholder="Ask something...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAP SCRIPT -->
+<script>
+function initMap() {
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 11,
+    center: { lat: 19.2183, lng: 72.9781 }
+  });
+
+  new google.maps.Marker({
+    position: { lat: 19.2183, lng: 72.9781 },
+    map
+  });
 }
+</script>
+
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByDzRHN7eHPEF-RMwieGISejLBQSAfruo&callback=initMap"></script>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>
