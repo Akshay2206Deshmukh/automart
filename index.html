@@ -23,14 +23,22 @@
 <body class="bg-slate-50 text-slate-800">
 
 <!-- ================= NAVBAR ================= -->
-<div class="flex justify-between items-center p-4 bg-white shadow">
-  <h1 class="font-bold text-xl text-brand-600">AutoMart</h1>
-  <div class="flex gap-4">
-    <button onclick="showPage('home')">Home</button>
-    <button onclick="showPage('search')">Search Parts</button>
-    <button onclick="showPage('dashboard')">Shop Dashboard</button>
-    <button onclick="showPage('login')">Log In</button>
-    <button onclick="showPage('register')">Register</button>
+<!-- ================= NAVBAR ================= -->
+<div class="w-full bg-white shadow-md fixed top-0 left-0 z-50">
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+
+    <!-- Logo -->
+    <h1 class="font-bold text-xl text-blue-600">AutoMart</h1>
+
+    <!-- Buttons -->
+    <div class="flex gap-6 text-sm font-medium">
+      <button onclick="showPage('home')" class="hover:text-blue-600">Home</button>
+      <button onclick="showPage('search')" class="hover:text-blue-600">Search Parts</button>
+      <button onclick="showPage('dashboard')" class="hover:text-blue-600">Shop Dashboard</button>
+      <button onclick="showPage('login')" class="px-3 py-1 border rounded">Log In</button>
+      <button onclick="showPage('register')" class="px-3 py-1 bg-blue-600 text-white rounded">Register</button>
+    </div>
+
   </div>
 </div>
 
