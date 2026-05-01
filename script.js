@@ -1,15 +1,19 @@
-// 🔥 PAGE SWITCHING
+'use strict';
+
+/* ================= UI FUNCTIONS ================= */
+
+// PAGE SWITCH
 window.showPage = function(page) {
   document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
   document.getElementById("page-" + page).classList.remove("hidden");
 };
 
-// 🔥 MOBILE MENU
+// MOBILE MENU
 window.toggleMobileMenu = function() {
   document.getElementById("mobileMenu").classList.toggle("hidden");
 };
 
-// 🔥 PASSWORD TOGGLE
+// PASSWORD TOGGLE
 window.togglePass = function(inputId, iconId) {
   const input = document.getElementById(inputId);
   const icon = document.getElementById(iconId);
@@ -23,14 +27,36 @@ window.togglePass = function(inputId, iconId) {
   }
 };
 
-// 🔥 DUMMY LOGIN (for now)
-window.handleLogin = function() {
-  alert("Login feature coming soon");
+// ACCOUNT TYPE SWITCH
+window.setAccountType = function(type) {
+  document.getElementById("typeBuyer").classList.remove("active");
+  document.getElementById("typeShop").classList.remove("active");
+
+  document.getElementById(type === "buyer" ? "typeBuyer" : "typeShop").classList.add("active");
+
+  document.getElementById("shopFields").classList.toggle("hidden", type !== "shop");
 };
 
-// 🔥 DUMMY REGISTER
+/* ================= FIREBASE SETUP ================= */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBhT0ag7_G567gV2uYvqKbXUARwWzDsDZg",
+  authDomain: "automart-6d640.firebaseapp.com",
+  projectId: "automart-6d640",
+  storageBucket: "automart-6d640.firebasestorage.app",
+  messagingSenderId: "397090205144",
+  appId: "1:397090205144:web:e01bbffd00a11a5d0696ad"
+};
+
+// INIT FIREBASE
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* ================= AUTH ================= */
+
+// REGISTER
 window.handleRegister = async function() {
-  const email = document.querySelector("input[type='email']").value;
+  const email = document.querySelector("#page-register input[type='email']").value;
   const password = document.getElementById("regPass").value;
 
   if (!email || !password) {
@@ -47,58 +73,47 @@ window.handleRegister = async function() {
   }
 };
 
-// 🔥 ACCOUNT TYPE TOGGLE
-window.setAccountType = function(type) {
-  document.getElementById("typeBuyer").classList.remove("active");
-  document.getElementById("typeShop").classList.remove("active");
+// LOGIN
+window.handleLogin = async function() {
+  const email = document.querySelector("#page-login input[type='email']").value;
+  const password = document.getElementById("loginPass").value;
 
-  document.getElementById(type === "buyer" ? "typeBuyer" : "typeShop").classList.add("active");
+  if (!email || !password) {
+    alert("Please fill all fields");
+    return;
+  }
 
-  document.getElementById("shopFields").classList.toggle("hidden", type !== "shop");
-};
-'use strict';
-
-// 🔥 FIREBASE IMPORTS
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-// 🔑 YOUR REAL CONFIG
-const firebaseConfig = {
-  apiKey: "AIzaSyBhT0ag7_G567gV2uYvqKbXUARwWzDsDZg",
-  authDomain: "automart-6d640.firebaseapp.com",
-  projectId: "automart-6d640",
-  storageBucket: "automart-6d640.firebasestorage.app",
-  messagingSenderId: "397090205144",
-  appId: "1:397090205144:web:e01bbffd00a11a5d0696ad"
+  try {
+    await firebase.auth().signInWithEmailAndPassword(email, password);
+    alert("Login successful!");
+    showPage('home');
+  } catch (error) {
+    alert(error.message);
+  }
 };
 
-// 🚀 INIT FIREBASE
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+/* ================= DATABASE ================= */
 
-// GLOBAL DATA
 let partsData = [];
 
-// 📥 LOAD DATA FROM FIREBASE
+// LOAD PARTS
 async function loadParts() {
-  const snapshot = await getDocs(collection(db, "parts"));
+  const snapshot = await db.collection("parts").get();
   partsData = [];
-  snapshot.forEach(doc => {
-    partsData.push({ id: doc.id, ...doc.data() });
-  });
+  snapshot.forEach(doc => partsData.push(doc.data()));
   renderResults(partsData);
 }
 
-// 🔎 SEARCH
+// SEARCH
 window.filterResults = function () {
   const text = document.getElementById("searchInput").value.toLowerCase();
-  let filtered = partsData.filter(p =>
+  const filtered = partsData.filter(p =>
     p.name.toLowerCase().includes(text)
   );
   renderResults(filtered);
 };
 
-// 🎨 DISPLAY RESULTS
+// DISPLAY RESULTS
 function renderResults(data) {
   const grid = document.getElementById("resultsGrid");
   const empty = document.getElementById("emptyState");
@@ -116,18 +131,17 @@ function renderResults(data) {
   count.innerHTML = `Showing ${data.length} results`;
 
   data.forEach(p => {
-    const card = `
+    grid.innerHTML += `
       <div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition">
         <h3 class="font-bold">${p.name}</h3>
         <p class="text-brand-600">₹${p.price}</p>
         <p>${p.availability}</p>
       </div>
     `;
-    grid.innerHTML += card;
   });
 }
 
-// ➕ ADD PART
+// ADD PART
 window.addPart = async function () {
   const name = document.getElementById("partName").value;
   const price = parseFloat(document.getElementById("partPrice").value);
@@ -139,7 +153,7 @@ window.addPart = async function () {
     return;
   }
 
-  await addDoc(collection(db, "parts"), {
+  await db.collection("parts").add({
     name,
     price,
     category,
@@ -150,7 +164,8 @@ window.addPart = async function () {
   loadParts();
 };
 
-// 🚀 INIT
-window.onload = () => {
+/* ================= INIT ================= */
+
+window.onload = function() {
   loadParts();
 };
