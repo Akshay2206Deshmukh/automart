@@ -1,77 +1,640 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoMart Pro</title>
-
-<link rel="stylesheet" href="style.css">
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AutoMart – Smart Vehicle Parts Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#eff6ff', 100:'#dbeafe', 200:'#bfdbfe', 300:'#93c5fd', 400:'#60a5fa', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e40af', 900:'#1e3a8a' },
+            dark: '#0f172a',
+            surface: '#f8fafc'
+          },
+          fontFamily: { display: ['Syne','sans-serif'], body: ['DM Sans','sans-serif'] }
+        }
+      }
+    }
+  </script>
 </head>
+<body class="font-body bg-surface text-dark antialiased">
 
-<body>
+<!-- ═══════════════════════════ NAVBAR ═══════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 nav-glass">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <button onclick="showPage('home')" class="flex items-center gap-2.5 group">
+        <div class="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-200 group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-gear text-white text-sm"></i>
+        </div>
+        <span class="font-display font-800 text-xl text-dark">Auto<span class="text-brand-600">Mart</span></span>
+      </button>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <h2>🚗 AutoMart</h2>
-  <input id="search" placeholder="Search parts...">
-  <span id="user">Not logged in</span>
-  <button onclick="logout()">Logout</button>
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <button onclick="showPage('home')" class="nav-link text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Home</button>
+        <button onclick="showPage('search')" class="nav-link text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Search Parts</button>
+        <button onclick="showPage('dashboard')" class="nav-link text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Shop Dashboard</button>
+      </div>
+
+      <!-- Auth Buttons -->
+      <div class="hidden md:flex items-center gap-3">
+        <button onclick="showPage('login')" class="px-4 py-2 text-sm font-medium text-brand-600 border border-brand-200 rounded-xl hover:bg-brand-50 transition-all">Log In</button>
+        <button onclick="showPage('register')" class="px-4 py-2 text-sm font-medium text-white bg-brand-600 rounded-xl hover:bg-brand-700 shadow-lg shadow-brand-200 transition-all hover:scale-[1.02] active:scale-[0.98]">Register</button>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button id="mobileMenuBtn" class="md:hidden w-9 h-9 flex flex-col gap-1.5 items-center justify-center" onclick="toggleMobileMenu()">
+        <span class="hamburger-line w-5 h-0.5 bg-dark transition-all"></span>
+        <span class="hamburger-line w-5 h-0.5 bg-dark transition-all"></span>
+        <span class="hamburger-line w-5 h-0.5 bg-dark transition-all"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="mobile-menu md:hidden hidden border-t border-slate-100 bg-white px-4 py-4 space-y-2">
+    <button onclick="showPage('home');toggleMobileMenu()" class="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition-colors">Home</button>
+    <button onclick="showPage('search');toggleMobileMenu()" class="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition-colors">Search Parts</button>
+    <button onclick="showPage('dashboard');toggleMobileMenu()" class="block w-full text-left px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition-colors">Shop Dashboard</button>
+    <div class="flex gap-2 pt-2 border-t border-slate-100">
+      <button onclick="showPage('login');toggleMobileMenu()" class="flex-1 py-2.5 text-sm font-medium text-brand-600 border border-brand-200 rounded-xl hover:bg-brand-50 transition-all">Log In</button>
+      <button onclick="showPage('register');toggleMobileMenu()" class="flex-1 py-2.5 text-sm font-medium text-white bg-brand-600 rounded-xl hover:bg-brand-700 transition-all">Register</button>
+    </div>
+  </div>
 </nav>
 
-<!-- AUTH -->
-<section class="auth">
-  <h2>Login / Register</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <div class="auth-btns">
-    <button onclick="login()">Login</button>
-    <button onclick="register()">Register</button>
-  </div>
-</section>
+<!-- ═══════════════════════════ HOME PAGE ═══════════════════════════ -->
+<div id="page-home" class="page pt-16">
 
-<!-- HERO -->
-<section class="hero">
-  <h1>Find Spare Parts Easily 🚀</h1>
-</section>
+  <!-- Hero -->
+  <section class="hero-bg relative overflow-hidden min-h-[92vh] flex items-center">
+    <div class="hero-grid-overlay absolute inset-0 pointer-events-none"></div>
+    <div class="hero-glow absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] pointer-events-none"></div>
 
-<!-- PRODUCTS -->
-<section>
-  <h2 class="center">Products</h2>
-  <div id="results" class="grid"></div>
-</section>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center w-full">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-brand-50 border border-brand-100 rounded-full text-brand-700 text-xs font-medium mb-8 animate-fadein">
+        <span class="w-1.5 h-1.5 bg-brand-500 rounded-full animate-pulse"></span>
+        Real-time price comparison across 500+ shops
+      </div>
 
-<!-- CART -->
-<div id="cart" class="cart">
-  <h2>Cart</h2>
-  <div id="cartItems"></div>
-  <h3>Total ₹<span id="total">0</span></h3>
-  <button onclick="checkout()">Checkout</button>
+      <!-- Heading -->
+      <h1 class="font-display font-extrabold text-5xl sm:text-6xl lg:text-7xl text-dark leading-[1.05] mb-6 animate-fadein-up">
+        Find Vehicle Parts<br/>
+        <span class="text-gradient">Instantly.</span>
+      </h1>
+
+      <p class="text-slate-500 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed animate-fadein-up delay-1">
+        Compare prices, check availability, and locate the nearest shops — all in one smart platform built for speed.
+      </p>
+
+      <!-- Search Bar -->
+      <div class="max-w-2xl mx-auto mb-6 animate-fadein-up delay-2">
+        <div class="search-bar-wrapper flex items-center gap-3 bg-white rounded-2xl p-2 pl-5 shadow-2xl shadow-slate-200 border border-slate-100">
+          <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
+          <input id="heroSearch" type="text" placeholder="Search brake pads, filters, headlights…"
+            class="flex-1 text-sm text-dark bg-transparent outline-none placeholder:text-slate-400 py-2"/>
+          <select class="hidden sm:block text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 outline-none cursor-pointer">
+            <option>All Vehicles</option>
+            <option>Car</option>
+            <option>Motorcycle</option>
+            <option>Truck</option>
+          </select>
+          <button onclick="doHeroSearch()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-brand-200 whitespace-nowrap">
+            Search
+          </button>
+        </div>
+      </div>
+
+      <!-- Popular tags -->
+      <div class="flex flex-wrap gap-2 justify-center animate-fadein-up delay-3">
+        <span class="text-xs text-slate-500 mt-1">Popular:</span>
+        <button onclick="quickSearch('Brake Pads')" class="tag-pill">Brake Pads</button>
+        <button onclick="quickSearch('Air Filter')" class="tag-pill">Air Filter</button>
+        <button onclick="quickSearch('Headlights')" class="tag-pill">Headlights</button>
+        <button onclick="quickSearch('Oil Filter')" class="tag-pill">Oil Filter</button>
+        <button onclick="quickSearch('Clutch Plate')" class="tag-pill">Clutch Plate</button>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="flex flex-wrap justify-center gap-10 mt-16 animate-fadein-up delay-3">
+        <div class="text-center">
+          <div class="font-display font-bold text-3xl text-dark">12K+</div>
+          <div class="text-xs text-slate-500 mt-0.5">Parts Listed</div>
+        </div>
+        <div class="w-px bg-slate-200 self-stretch hidden sm:block"></div>
+        <div class="text-center">
+          <div class="font-display font-bold text-3xl text-dark">500+</div>
+          <div class="text-xs text-slate-500 mt-0.5">Partner Shops</div>
+        </div>
+        <div class="w-px bg-slate-200 self-stretch hidden sm:block"></div>
+        <div class="text-center">
+          <div class="font-display font-bold text-3xl text-dark">3 Cities</div>
+          <div class="text-xs text-slate-500 mt-0.5">Currently Active</div>
+        </div>
+        <div class="w-px bg-slate-200 self-stretch hidden sm:block"></div>
+        <div class="text-center">
+          <div class="font-display font-bold text-3xl text-dark">98%</div>
+          <div class="text-xs text-slate-500 mt-0.5">Stock Accuracy</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Cards -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+    <div class="text-center mb-16">
+      <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Why AutoMart</span>
+      <h2 class="font-display font-bold text-4xl text-dark mt-3">Everything you need,<br/>in one place</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Card 1 -->
+      <div class="feature-card group cursor-pointer" onclick="showPage('search')">
+        <div class="icon-box bg-blue-50 group-hover:bg-brand-600 transition-colors">
+          <i class="fa-solid fa-magnifying-glass text-brand-600 group-hover:text-white transition-colors text-lg"></i>
+        </div>
+        <h3 class="font-display font-bold text-xl text-dark mt-6 mb-3">Search Parts</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Find any vehicle part from our catalogue of 12,000+ items across brands, models, and years.</p>
+        <div class="mt-6 flex items-center gap-2 text-brand-600 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity translate-y-1 group-hover:translate-y-0">
+          Start searching <i class="fa-solid fa-arrow-right text-xs"></i>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="feature-card feature-card-highlight group cursor-pointer">
+        <div class="icon-box bg-white/20 group-hover:bg-white/30 transition-colors">
+          <i class="fa-solid fa-scale-balanced text-white text-lg"></i>
+        </div>
+        <h3 class="font-display font-bold text-xl text-white mt-6 mb-3">Compare Prices</h3>
+        <p class="text-blue-100 text-sm leading-relaxed">See live prices from multiple shops side-by-side. Never overpay for a part again.</p>
+        <div class="mt-6 flex items-center gap-2 text-white text-sm font-semibold">
+          Compare now <i class="fa-solid fa-arrow-right text-xs"></i>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="feature-card group cursor-pointer">
+        <div class="icon-box bg-emerald-50 group-hover:bg-emerald-500 transition-colors">
+          <i class="fa-solid fa-location-dot text-emerald-600 group-hover:text-white transition-colors text-lg"></i>
+        </div>
+        <h3 class="font-display font-bold text-xl text-dark mt-6 mb-3">Nearby Shops</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Discover verified shops near you with real stock availability and distance info.</p>
+        <div class="mt-6 flex items-center gap-2 text-emerald-600 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity translate-y-1 group-hover:translate-y-0">
+          Find shops <i class="fa-solid fa-arrow-right text-xs"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="bg-white border-y border-slate-100 py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="text-xs font-semibold uppercase tracking-widest text-brand-600">Simple Process</span>
+        <h2 class="font-display font-bold text-4xl text-dark mt-3">How AutoMart Works</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="how-step">
+          <div class="step-num">01</div>
+          <h4 class="font-semibold text-dark mt-4 mb-2">Search Your Part</h4>
+          <p class="text-sm text-slate-500">Type the part name, vehicle model, or OEM number.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">02</div>
+          <h4 class="font-semibold text-dark mt-4 mb-2">View Results</h4>
+          <p class="text-sm text-slate-500">Instantly see all matching parts with prices and shop details.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">03</div>
+          <h4 class="font-semibold text-dark mt-4 mb-2">Compare & Choose</h4>
+          <p class="text-sm text-slate-500">Sort by price or distance, and pick the best deal.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">04</div>
+          <h4 class="font-semibold text-dark mt-4 mb-2">Visit or Order</h4>
+          <p class="text-sm text-slate-500">Go to the shop or request home delivery through the platform.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+    <div class="cta-banner rounded-3xl p-10 sm:p-16 text-center relative overflow-hidden">
+      <div class="cta-glow"></div>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white mb-4 relative z-10">Are you a shop owner?</h2>
+      <p class="text-blue-100 mb-8 text-lg relative z-10 max-w-xl mx-auto">List your inventory on AutoMart and reach thousands of customers searching for parts right now.</p>
+      <button onclick="showPage('register')" class="relative z-10 bg-white text-brand-700 font-bold px-8 py-3.5 rounded-xl hover:bg-blue-50 transition-all hover:scale-[1.03] active:scale-[0.98] shadow-xl text-sm">
+        Register Your Shop →
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-slate-400 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 bg-brand-600 rounded-xl flex items-center justify-center">
+            <i class="fa-solid fa-gear text-white text-xs"></i>
+          </div>
+          <span class="font-display font-bold text-white">Auto<span class="text-brand-400">Mart</span></span>
+        </div>
+        <p class="text-sm">© 2025 AutoMart. Smart parts, smart choices.</p>
+        <div class="flex gap-4">
+          <a href="#" class="text-slate-500 hover:text-brand-400 transition-colors"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#" class="text-slate-500 hover:text-brand-400 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="text-slate-500 hover:text-brand-400 transition-colors"><i class="fa-brands fa-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </div>
 
-<button class="cartBtn" onclick="toggleCart()">🛒</button>
+<!-- ═══════════════════════════ SEARCH RESULTS PAGE ═══════════════════════════ -->
+<div id="page-search" class="page hidden pt-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-<!-- ADD PART -->
-<section class="add">
-  <h2>Add Part</h2>
-  <input id="partName" placeholder="Part Name">
-  <input id="partPrice" placeholder="Price">
-  <input id="shopName" placeholder="Shop Name">
-  <input id="partImage" placeholder="Image URL">
-  <button onclick="addPart()">Add Part</button>
-</section>
+    <!-- Search Header -->
+    <div class="mb-8">
+      <h1 class="font-display font-bold text-3xl text-dark mb-2">Search Parts</h1>
+      <p class="text-slate-500 text-sm">Find and compare prices from shops near you</p>
+    </div>
 
-<!-- CHATBOT -->
-<div id="chatbot">
-  <div id="chat-header" onclick="toggleChat()">🤖 AI</div>
-  <div id="chat-body">
-    <div id="chat-messages"></div>
-    <input id="chatInput">
-    <button onclick="sendMessage()">Send</button>
+    <!-- Search + Filters Row -->
+    <div class="flex flex-col sm:flex-row gap-3 mb-8">
+      <div class="flex flex-1 items-center gap-3 bg-white rounded-xl px-4 py-3 border border-slate-200 shadow-sm focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100 transition-all">
+        <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
+        <input id="searchInput" type="text" placeholder="e.g. Brake Pads, Oil Filter, Headlights…"
+          class="flex-1 text-sm outline-none bg-transparent text-dark placeholder:text-slate-400"/>
+        <button onclick="filterResults()" class="text-xs font-semibold text-brand-600 hover:text-brand-700">Search</button>
+      </div>
+      <!-- Sort -->
+      <select id="sortSelect" onchange="sortResults()" class="bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 outline-none shadow-sm cursor-pointer hover:border-brand-400 transition-colors">
+        <option value="default">Sort: Relevance</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="distance">Distance: Nearest</option>
+      </select>
+      <select id="availFilter" onchange="filterResults()" class="bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-600 outline-none shadow-sm cursor-pointer hover:border-brand-400 transition-colors">
+        <option value="all">All Stock</option>
+        <option value="instock">In Stock Only</option>
+      </select>
+    </div>
+
+    <!-- Result count -->
+    <div class="flex items-center justify-between mb-6">
+      <p id="resultCount" class="text-sm text-slate-500">Showing <span class="font-semibold text-dark">6</span> results</p>
+      <div class="flex items-center gap-2">
+        <button class="w-8 h-8 flex items-center justify-center bg-brand-600 text-white rounded-lg"><i class="fa-solid fa-grip text-xs"></i></button>
+        <button class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 text-slate-500 rounded-lg hover:border-brand-400 transition-colors"><i class="fa-solid fa-list text-xs"></i></button>
+      </div>
+    </div>
+
+    <!-- Results Grid -->
+    <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-20">
+      <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <i class="fa-solid fa-box-open text-slate-400 text-2xl"></i>
+      </div>
+      <h3 class="font-semibold text-dark mb-2">No parts found</h3>
+      <p class="text-slate-500 text-sm">Try a different search term or remove filters.</p>
+    </div>
   </div>
 </div>
 
-<script type="module" src="script.js"></script>
+<!-- ═══════════════════════════ LOGIN PAGE ═══════════════════════════ -->
+<div id="page-login" class="page hidden pt-16 min-h-screen flex items-center justify-center">
+  <div class="auth-bg absolute inset-0 pointer-events-none"></div>
+  <div class="relative w-full max-w-md mx-auto px-4 py-12">
+    <div class="auth-card bg-white rounded-3xl shadow-2xl shadow-slate-200 p-8 sm:p-10">
+      <!-- Logo -->
+      <div class="text-center mb-8">
+        <div class="w-12 h-12 bg-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-brand-200">
+          <i class="fa-solid fa-gear text-white"></i>
+        </div>
+        <h2 class="font-display font-bold text-2xl text-dark">Welcome back</h2>
+        <p class="text-slate-500 text-sm mt-1.5">Log in to your AutoMart account</p>
+      </div>
 
+      <!-- Form -->
+      <div class="space-y-4">
+        <div class="input-group">
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Email Address</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input type="email" placeholder="you@email.com" class="auth-input"/>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Password</label>
+            <a href="#" class="text-xs text-brand-600 hover:underline">Forgot password?</a>
+          </div>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="loginPass" placeholder="••••••••" class="auth-input pr-10"/>
+            <button type="button" onclick="togglePass('loginPass','loginEye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+              <i id="loginEye" class="fa-solid fa-eye text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="remember" class="w-4 h-4 rounded text-brand-600 border-slate-300"/>
+          <label for="remember" class="text-sm text-slate-500">Remember me</label>
+        </div>
+
+        <button onclick="handleLogin()" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-brand-200 mt-2 text-sm">
+          Log In
+        </button>
+
+        <div class="relative my-2">
+          <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
+          <div class="relative flex justify-center"><span class="bg-white px-3 text-xs text-slate-400">or continue with</span></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <button class="social-btn"><i class="fa-brands fa-google text-red-500"></i> Google</button>
+          <button class="social-btn"><i class="fa-brands fa-facebook text-brand-600"></i> Facebook</button>
+        </div>
+      </div>
+
+      <p class="text-center text-sm text-slate-500 mt-6">
+        Don't have an account?
+        <button onclick="showPage('register')" class="text-brand-600 font-semibold hover:underline">Register free</button>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ REGISTER PAGE ═══════════════════════════ -->
+<div id="page-register" class="page hidden pt-16 min-h-screen flex items-center justify-center">
+  <div class="auth-bg absolute inset-0 pointer-events-none"></div>
+  <div class="relative w-full max-w-md mx-auto px-4 py-12">
+    <div class="auth-card bg-white rounded-3xl shadow-2xl shadow-slate-200 p-8 sm:p-10">
+      <div class="text-center mb-8">
+        <div class="w-12 h-12 bg-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-brand-200">
+          <i class="fa-solid fa-user-plus text-white"></i>
+        </div>
+        <h2 class="font-display font-bold text-2xl text-dark">Create account</h2>
+        <p class="text-slate-500 text-sm mt-1.5">Join AutoMart — it's free</p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Account Type Toggle -->
+        <div class="flex rounded-xl border border-slate-200 p-1 bg-slate-50">
+          <button id="typeBuyer" onclick="setAccountType('buyer')" class="account-type-btn active flex-1 text-sm font-medium py-2 rounded-lg transition-all">
+            <i class="fa-solid fa-user mr-1.5"></i> Buyer
+          </button>
+          <button id="typeShop" onclick="setAccountType('shop')" class="account-type-btn flex-1 text-sm font-medium py-2 rounded-lg transition-all">
+            <i class="fa-solid fa-store mr-1.5"></i> Shop Owner
+          </button>
+        </div>
+
+        <div class="input-group">
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Full Name</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-user input-icon"></i>
+            <input type="text" placeholder="John Doe" class="auth-input"/>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Email Address</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input type="email" placeholder="you@email.com" class="auth-input"/>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Phone Number</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-phone input-icon"></i>
+            <input type="tel" placeholder="+91 98765 43210" class="auth-input"/>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Password</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="regPass" placeholder="Min. 8 characters" class="auth-input pr-10"/>
+            <button type="button" onclick="togglePass('regPass','regEye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <i id="regEye" class="fa-solid fa-eye text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Shop fields (hidden by default) -->
+        <div id="shopFields" class="space-y-4 hidden">
+          <div class="input-group">
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Shop Name</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-store input-icon"></i>
+              <input type="text" placeholder="Auto Parts Hub" class="auth-input"/>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Shop Address</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-location-dot input-icon"></i>
+              <input type="text" placeholder="Full address" class="auth-input"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2">
+          <input type="checkbox" id="terms" class="w-4 h-4 mt-0.5 rounded text-brand-600 border-slate-300"/>
+          <label for="terms" class="text-sm text-slate-500">I agree to the <a href="#" class="text-brand-600 hover:underline">Terms of Service</a> and <a href="#" class="text-brand-600 hover:underline">Privacy Policy</a></label>
+        </div>
+
+        <button onclick="handleRegister()" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-brand-200 text-sm">
+          Create Account
+        </button>
+      </div>
+
+      <p class="text-center text-sm text-slate-500 mt-6">
+        Already have an account?
+        <button onclick="showPage('login')" class="text-brand-600 font-semibold hover:underline">Log in</button>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ DASHBOARD PAGE ═══════════════════════════ -->
+<div id="page-dashboard" class="page hidden pt-16 min-h-screen bg-slate-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+      <div>
+        <h1 class="font-display font-bold text-3xl text-dark">Shop Dashboard</h1>
+        <p class="text-slate-500 text-sm mt-1">Manage your inventory and track performance</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 px-3 py-2 bg-white rounded-xl border border-slate-200 text-sm">
+          <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+          <span class="text-slate-700 font-medium">Online</span>
+        </div>
+        <div class="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center text-white text-sm font-bold">S</div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <div class="stat-card">
+        <div class="stat-icon bg-brand-50"><i class="fa-solid fa-boxes-stacked text-brand-600 text-sm"></i></div>
+        <div class="stat-value" id="totalParts">0</div>
+        <div class="stat-label">Total Parts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-emerald-50"><i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i></div>
+        <div class="stat-value text-emerald-600" id="inStockCount">0</div>
+        <div class="stat-label">In Stock</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-amber-50"><i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm"></i></div>
+        <div class="stat-value text-amber-600" id="outStockCount">0</div>
+        <div class="stat-label">Out of Stock</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-purple-50"><i class="fa-solid fa-indian-rupee-sign text-purple-600 text-sm"></i></div>
+        <div class="stat-value" id="avgPrice">₹0</div>
+        <div class="stat-label">Avg. Price</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <!-- Add Part Form -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <h3 class="font-display font-bold text-lg text-dark mb-5 flex items-center gap-2">
+            <i class="fa-solid fa-plus text-brand-600 text-sm"></i> Add New Part
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <label class="dash-label">Part Name *</label>
+              <input id="partName" type="text" placeholder="e.g. Brake Pads" class="dash-input"/>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="dash-label">Category</label>
+                <select id="partCat" class="dash-input cursor-pointer">
+                  <option>Engine</option>
+                  <option>Brakes</option>
+                  <option>Electrical</option>
+                  <option>Body</option>
+                  <option>Suspension</option>
+                  <option>Filters</option>
+                  <option>Lighting</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="dash-label">Vehicle Type</label>
+                <select id="partVehicle" class="dash-input cursor-pointer">
+                  <option>Car</option>
+                  <option>Motorcycle</option>
+                  <option>Truck</option>
+                  <option>All</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="dash-label">Price (₹) *</label>
+                <input id="partPrice" type="number" placeholder="0.00" class="dash-input"/>
+              </div>
+              <div>
+                <label class="dash-label">Quantity</label>
+                <input id="partQty" type="number" placeholder="0" class="dash-input"/>
+              </div>
+            </div>
+            <div>
+              <label class="dash-label">Availability</label>
+              <div class="flex gap-3 mt-1">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="avail" value="In Stock" checked class="text-brand-600"/>
+                  <span class="text-sm text-slate-600">In Stock</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="avail" value="Out of Stock" class="text-brand-600"/>
+                  <span class="text-sm text-slate-600">Out of Stock</span>
+                </label>
+              </div>
+            </div>
+            <div>
+              <label class="dash-label">Description</label>
+              <textarea id="partDesc" rows="2" placeholder="Brand, compatibility, condition…" class="dash-input resize-none"></textarea>
+            </div>
+            <button onclick="addPart()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99] shadow-md shadow-brand-200">
+              <i class="fa-solid fa-plus mr-2"></i>Add Part to Inventory
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parts Table -->
+      <div class="lg:col-span-3">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="font-display font-bold text-lg text-dark">Inventory</h3>
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input type="text" placeholder="Filter parts…" oninput="filterInventory(this.value)" class="pl-8 pr-3 py-2 text-xs border border-slate-200 rounded-lg outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition-all"/>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-100">
+                  <th class="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-6 py-3">Part</th>
+                  <th class="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-3 py-3">Category</th>
+                  <th class="text-right text-xs font-semibold text-slate-500 uppercase tracking-wide px-3 py-3">Price</th>
+                  <th class="text-center text-xs font-semibold text-slate-500 uppercase tracking-wide px-3 py-3">Status</th>
+                  <th class="text-center text-xs font-semibold text-slate-500 uppercase tracking-wide px-6 py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody id="partsTableBody" class="divide-y divide-slate-50"></tbody>
+            </table>
+          </div>
+          <div id="emptyInventory" class="hidden text-center py-12">
+            <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <i class="fa-solid fa-boxes-stacked text-slate-400"></i>
+            </div>
+            <p class="text-sm text-slate-500 font-medium">No parts added yet</p>
+            <p class="text-xs text-slate-400 mt-1">Add your first part using the form</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TOAST ═══════════════════════════ -->
+<div id="toast" class="fixed bottom-6 right-6 z-[100] hidden">
+  <div class="flex items-center gap-3 bg-dark text-white px-4 py-3 rounded-2xl shadow-2xl text-sm font-medium min-w-[220px]">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toastMsg">Success!</span>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
