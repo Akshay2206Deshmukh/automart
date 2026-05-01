@@ -1,3 +1,47 @@
+// 🔥 PAGE SWITCHING
+window.showPage = function(page) {
+  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+  document.getElementById("page-" + page).classList.remove("hidden");
+};
+
+// 🔥 MOBILE MENU
+window.toggleMobileMenu = function() {
+  document.getElementById("mobileMenu").classList.toggle("hidden");
+};
+
+// 🔥 PASSWORD TOGGLE
+window.togglePass = function(inputId, iconId) {
+  const input = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.replace("fa-eye", "fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.replace("fa-eye-slash", "fa-eye");
+  }
+};
+
+// 🔥 DUMMY LOGIN (for now)
+window.handleLogin = function() {
+  alert("Login feature coming soon");
+};
+
+// 🔥 DUMMY REGISTER
+window.handleRegister = function() {
+  alert("Register feature coming soon");
+};
+
+// 🔥 ACCOUNT TYPE TOGGLE
+window.setAccountType = function(type) {
+  document.getElementById("typeBuyer").classList.remove("active");
+  document.getElementById("typeShop").classList.remove("active");
+
+  document.getElementById(type === "buyer" ? "typeBuyer" : "typeShop").classList.add("active");
+
+  document.getElementById("shopFields").classList.toggle("hidden", type !== "shop");
+};
 'use strict';
 
 // 🔥 FIREBASE IMPORTS
