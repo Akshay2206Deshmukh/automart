@@ -406,3 +406,28 @@ table { border-collapse: collapse; }
   .hero-bg { min-height: auto; padding: 40px 0 60px; }
   .cta-banner { padding: 40px 24px; }
 }
+/* 🔥 Improve result cards (for Firebase data) */
+.result-card {
+  display: block;
+}
+
+/* Smooth hover for dynamic cards */
+.result-card:hover {
+  transform: translateY(-5px) scale(1.01);
+}
+
+/* Better empty state visibility */
+#emptyState {
+  opacity: 0.9;
+}
+
+/* Fix table overflow on small screens */
+table {
+  min-width: 600px;
+}
+
+/* Improve input focus glow globally */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+}
