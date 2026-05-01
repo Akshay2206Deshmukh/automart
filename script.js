@@ -29,8 +29,22 @@ window.handleLogin = function() {
 };
 
 // 🔥 DUMMY REGISTER
-window.handleRegister = function() {
-  alert("Register feature coming soon");
+window.handleRegister = async function() {
+  const email = document.querySelector("input[type='email']").value;
+  const password = document.getElementById("regPass").value;
+
+  if (!email || !password) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+    await firebase.auth().createUserWithEmailAndPassword(email, password);
+    alert("Account created successfully!");
+    showPage('home');
+  } catch (error) {
+    alert(error.message);
+  }
 };
 
 // 🔥 ACCOUNT TYPE TOGGLE
